@@ -1,0 +1,47 @@
+// FlatBuffers schema for Futchain data structures
+namespace futchain;
+
+// Team represents a football team
+table Team {
+    id: int32;
+    score: int32;
+    name: string;
+    long_name: string;
+}
+
+// Status represents match status information
+table Status {
+    utc_time: int64;        // Unix timestamp
+    period_length: int32;
+    started: bool;
+    cancelled: bool;
+    finished: bool;
+}
+
+// Match represents a football match
+table Match {
+    id: int32;
+    league_id: int32;
+    time: string;
+    home: Team;
+    away: Team;
+    eliminated_team_id: int32;  // -1 if null
+    status_id: int32;
+    tournament_stage: string;
+    status: Status;
+    time_ts: int64;
+}
+
+// League represents a football league
+table League {
+    is_group: bool;
+    group_name: string;
+    ccode: string;
+    id: int32;
+    primary_id: int32;
+    name: string;
+    matches: [Match];
+}
+
+// Root type for serialization
+root_type League;
