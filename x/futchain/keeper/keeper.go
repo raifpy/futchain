@@ -2,12 +2,14 @@ package keeper
 
 import (
 	"fmt"
+	"net/http"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	corestore "cosmossdk.io/core/store"
 	"github.com/cosmos/cosmos-sdk/codec"
 
+	"github.com/raifpy/futchain/x/futchain/keeper/datasource"
 	"github.com/raifpy/futchain/x/futchain/types"
 )
 
@@ -21,6 +23,8 @@ type Keeper struct {
 
 	Schema collections.Schema
 	Params collections.Item[types.Params]
+
+	Datasource *datasource.DatasourceFM
 }
 
 func NewKeeper(
@@ -28,6 +32,7 @@ func NewKeeper(
 	cdc codec.Codec,
 	addressCodec address.Codec,
 	authority []byte,
+	c DatasourceConfig,
 
 ) Keeper {
 	if _, err := addressCodec.BytesToString(authority); err != nil {
@@ -43,6 +48,18 @@ func NewKeeper(
 		authority:    authority,
 
 		Params: collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+
+		Datasource: &datasource.DatasourceFM{
+			Client:  &http.Client{},
+			BaseURL: c.ApiURL,
+			Headers: func() http.Header {
+				var headers = make(http.Header, len(c.Headers))
+				for key, value := range c.Headers {
+					headers.Set(key, value)
+				}
+				return headers
+			}(),
+		},
 	}
 
 	schema, err := sb.Build()

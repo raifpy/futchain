@@ -4,13 +4,12 @@
 package types
 
 import (
+	_ "cosmossdk.io/api/cosmos/app/v1alpha1"
 	fmt "fmt"
+	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-
-	_ "cosmossdk.io/api/cosmos/app/v1alpha1"
-	proto "github.com/cosmos/gogoproto/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -28,7 +27,9 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type Module struct {
 	// authority defines the custom module authority.
 	// If not set, defaults to the governance module.
-	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Authority string            `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	ApiUrl    string            `protobuf:"bytes,2,opt,name=api_url,json=apiUrl,proto3" json:"api_url,omitempty"`
+	Headers   map[string]string `protobuf:"bytes,3,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *Module) Reset()         { *m = Module{} }
@@ -71,8 +72,23 @@ func (m *Module) GetAuthority() string {
 	return ""
 }
 
+func (m *Module) GetApiUrl() string {
+	if m != nil {
+		return m.ApiUrl
+	}
+	return ""
+}
+
+func (m *Module) GetHeaders() map[string]string {
+	if m != nil {
+		return m.Headers
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*Module)(nil), "futchain.futchain.module.v1.Module")
+	proto.RegisterMapType((map[string]string)(nil), "futchain.futchain.module.v1.Module.HeadersEntry")
 }
 
 func init() {
@@ -80,19 +96,25 @@ func init() {
 }
 
 var fileDescriptor_98edefdd8a0184b0 = []byte{
-	// 191 bytes of a gzipped FileDescriptorProto
+	// 285 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xd2, 0x48, 0x2b, 0x2d, 0x49,
 	0xce, 0x48, 0xcc, 0xcc, 0xd3, 0x87, 0x33, 0x72, 0xf3, 0x53, 0x4a, 0x73, 0x52, 0xf5, 0xcb, 0x0c,
 	0xa1, 0x2c, 0xbd, 0x82, 0xa2, 0xfc, 0x92, 0x7c, 0x21, 0x69, 0x98, 0x02, 0x3d, 0x38, 0x03, 0x2a,
 	0x5f, 0x66, 0x28, 0xa5, 0x90, 0x9c, 0x5f, 0x9c, 0x9b, 0x5f, 0xac, 0x9f, 0x58, 0x50, 0xa0, 0x5f,
-	0x66, 0x98, 0x98, 0x53, 0x90, 0x91, 0x88, 0xaa, 0x5d, 0x29, 0x94, 0x8b, 0xcd, 0x17, 0xcc, 0x17,
-	0x92, 0xe1, 0xe2, 0x4c, 0x2c, 0x2d, 0xc9, 0xc8, 0x2f, 0xca, 0x2c, 0xa9, 0x94, 0x60, 0x54, 0x60,
-	0xd4, 0xe0, 0x0c, 0x42, 0x08, 0x58, 0xe9, 0xee, 0x3a, 0x30, 0xed, 0x16, 0xa3, 0x3a, 0x97, 0x6a,
-	0x7a, 0x66, 0x49, 0x46, 0x69, 0x92, 0x5e, 0x72, 0x7e, 0xae, 0x7e, 0x51, 0x62, 0x66, 0x5a, 0x41,
-	0x25, 0xc2, 0x85, 0x15, 0x70, 0xa6, 0x93, 0xeb, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31,
-	0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb,
-	0x31, 0x44, 0x69, 0x13, 0x65, 0x80, 0x7e, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0xd8, 0x91,
-	0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x5b, 0xd2, 0x85, 0x33, 0x0f, 0x01, 0x00, 0x00,
+	0x66, 0x98, 0x98, 0x53, 0x90, 0x91, 0x88, 0xaa, 0x5d, 0xe9, 0x1b, 0x23, 0x17, 0x9b, 0x2f, 0x58,
+	0x40, 0x48, 0x86, 0x8b, 0x33, 0xb1, 0xb4, 0x24, 0x23, 0xbf, 0x28, 0xb3, 0xa4, 0x52, 0x82, 0x51,
+	0x81, 0x51, 0x83, 0x33, 0x08, 0x21, 0x20, 0x24, 0xce, 0xc5, 0x9e, 0x58, 0x90, 0x19, 0x5f, 0x5a,
+	0x94, 0x23, 0xc1, 0x04, 0x96, 0x63, 0x4b, 0x2c, 0xc8, 0x0c, 0x2d, 0xca, 0x11, 0xf2, 0xe2, 0x62,
+	0xcf, 0x48, 0x4d, 0x4c, 0x49, 0x2d, 0x2a, 0x96, 0x60, 0x56, 0x60, 0xd6, 0xe0, 0x36, 0x32, 0xd0,
+	0xc3, 0xe3, 0x24, 0x3d, 0x88, 0x65, 0x7a, 0x1e, 0x10, 0x2d, 0xae, 0x79, 0x25, 0x45, 0x95, 0x41,
+	0x30, 0x03, 0xa4, 0xac, 0xb8, 0x78, 0x90, 0x25, 0x84, 0x04, 0xb8, 0x98, 0xb3, 0x53, 0x61, 0x8e,
+	0x01, 0x31, 0x85, 0x44, 0xb8, 0x58, 0xcb, 0x12, 0x73, 0x4a, 0x53, 0xa1, 0x8e, 0x80, 0x70, 0xac,
+	0x98, 0x2c, 0x18, 0xad, 0x74, 0x77, 0x1d, 0x98, 0x76, 0x8b, 0x51, 0x9d, 0x4b, 0x35, 0x3d, 0xb3,
+	0x24, 0xa3, 0x34, 0x49, 0x2f, 0x39, 0x3f, 0x57, 0xbf, 0x28, 0x31, 0x33, 0xad, 0xa0, 0x12, 0x11,
+	0x86, 0x15, 0x70, 0xa6, 0x93, 0xeb, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31, 0x3e, 0x78,
+	0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb, 0x31, 0x44,
+	0x69, 0x13, 0x65, 0x80, 0x7e, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0x38, 0x18, 0x8d, 0x01,
+	0x01, 0x00, 0x00, 0xff, 0xff, 0xee, 0xe3, 0xc5, 0xa2, 0xb1, 0x01, 0x00, 0x00,
 }
 
 func (m *Module) Marshal() (dAtA []byte, err error) {
@@ -115,6 +137,32 @@ func (m *Module) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Headers) > 0 {
+		for k := range m.Headers {
+			v := m.Headers[k]
+			baseI := i
+			i -= len(v)
+			copy(dAtA[i:], v)
+			i = encodeVarintModule(dAtA, i, uint64(len(v)))
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintModule(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintModule(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.ApiUrl) > 0 {
+		i -= len(m.ApiUrl)
+		copy(dAtA[i:], m.ApiUrl)
+		i = encodeVarintModule(dAtA, i, uint64(len(m.ApiUrl)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Authority) > 0 {
 		i -= len(m.Authority)
 		copy(dAtA[i:], m.Authority)
@@ -145,6 +193,18 @@ func (m *Module) Size() (n int) {
 	l = len(m.Authority)
 	if l > 0 {
 		n += 1 + l + sovModule(uint64(l))
+	}
+	l = len(m.ApiUrl)
+	if l > 0 {
+		n += 1 + l + sovModule(uint64(l))
+	}
+	if len(m.Headers) > 0 {
+		for k, v := range m.Headers {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovModule(uint64(len(k))) + 1 + len(v) + sovModule(uint64(len(v)))
+			n += mapEntrySize + 1 + sovModule(uint64(mapEntrySize))
+		}
 	}
 	return n
 }
@@ -215,6 +275,165 @@ func (m *Module) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiUrl", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowModule
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthModule
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthModule
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ApiUrl = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Headers", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowModule
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthModule
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthModule
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Headers == nil {
+				m.Headers = make(map[string]string)
+			}
+			var mapkey string
+			var mapvalue string
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowModule
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowModule
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthModule
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthModule
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var stringLenmapvalue uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowModule
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapvalue |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapvalue := int(stringLenmapvalue)
+					if intStringLenmapvalue < 0 {
+						return ErrInvalidLengthModule
+					}
+					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+					if postStringIndexmapvalue < 0 {
+						return ErrInvalidLengthModule
+					}
+					if postStringIndexmapvalue > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+					iNdEx = postStringIndexmapvalue
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipModule(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLengthModule
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Headers[mapkey] = mapvalue
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

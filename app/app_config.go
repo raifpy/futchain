@@ -145,8 +145,28 @@ var (
 				Config: appconfig.WrapAny(&consensusmodulev1.Module{}),
 			},
 			{
-				Name:   futchainmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&futchainmoduletypes.Module{}),
+				Name: futchainmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&futchainmoduletypes.Module{
+					ApiUrl: "https://www.fotmob.com", //TODO: implement default values from config
+					Headers: map[string]string{
+						"accept":             "*/*",
+						"accept-language":    "en-US,en;q=0.7",
+						"cache-control":      "no-cache",
+						"dnt":                "1",
+						"pragma":             "no-cache",
+						"priority":           "u=1, i",
+						"referer":            "https://www.fotmob.com/",
+						"sec-ch-ua":          `"Chromium";v="140", "Not=A?Brand";v="24", "Brave";v="140"`,
+						"sec-ch-ua-mobile":   "?0",
+						"sec-ch-ua-platform": `"macOS"`,
+						"sec-fetch-dest":     "empty",
+						"sec-fetch-mode":     "cors",
+						"sec-fetch-site":     "same-origin",
+						"sec-gpc":            "1",
+						"user-agent":         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+						"x-mas":              "eyJib2R5Ijp7InVybCI6Ii9hcGkvZGF0YS9tYXRjaGVzP2RhdGU9MjAyNTA5MDYmdGltZXpvbmU9RXVyb3BlJTJGSXN0YW5idWwmY2NvZGUzPUdCUiIsImNvZGUiOjE3NTcxNjIzMjEzNTEsImZvbyI6InByb2R1Y3Rpb246ZTUyYTNmYzE5Y2Y0YmY0NTY3ZTBlMzA3N2Q1OWQzNjVhNGEyYjNkNiJ9LCJzaWduYXR1cmUiOiIwOUVDNUVBNTNDQkNDNEFCODU3M0ZFMDQxN0REMTUwRCJ9",
+					},
+				}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

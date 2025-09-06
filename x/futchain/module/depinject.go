@@ -55,6 +55,10 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.Cdc,
 		in.AddressCodec,
 		authority,
+		keeper.DatasourceConfig{
+			ApiURL:  in.Config.ApiUrl,
+			Headers: in.Config.Headers,
+		},
 	)
 	m := NewAppModule(in.Cdc, k, in.AuthKeeper, in.BankKeeper)
 

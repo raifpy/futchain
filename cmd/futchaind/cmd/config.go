@@ -46,7 +46,16 @@ func initAppConfig() (string, interface{}) {
 		Config: *srvCfg,
 	}
 
-	customAppTemplate := serverconfig.DefaultConfigTemplate
+	//TODO: implement datasource urls from config app.toml
+	customAppTemplate := serverconfig.DefaultConfigTemplate + `
+[futchain]
+# This is the datasource url. It will be module based in future.
+api_url =  "update me"
+
+# This is the headers that node will use while making request to the datasource api_url
+headers = '{"update_me":"true"}'
+`
+
 	// Edit the default template file
 	//
 	// customAppTemplate := serverconfig.DefaultConfigTemplate + `
