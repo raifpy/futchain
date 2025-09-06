@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package futchain.futchain.v1;
 
 import "amino/amino.proto";
@@ -10,4 +11,5 @@ option go_package = "github.com/raifpy/futchain/x/futchain/types";
 message Params {
   option (amino.name) = "futchain/x/futchain/Params";
   option (gogoproto.equal) = true;
+  string timezone = 1;
 }
