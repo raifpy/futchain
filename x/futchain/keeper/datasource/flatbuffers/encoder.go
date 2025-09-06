@@ -93,30 +93,11 @@ func EncodeMatch(match *datasource.Match) ([]byte, error) {
 		return nil, errors.New("match cannot be nil")
 	}
 
-	builder := flatbuffers.NewBuilder(2048)
+	builder := flatbuffers.NewBuilder(1024)
 
 	// Create string offsets
 	timeOffset := builder.CreateString(match.Time)
 	tournamentStageOffset := builder.CreateString(match.TournamentStage)
-
-	// Encode nested Team structs directly
-	homeNameOffset := builder.CreateString(match.Home.Name)
-	homeLongNameOffset := builder.CreateString(match.Home.LongName)
-	futchain.TeamStart(builder)
-	futchain.TeamAddId(builder, int32(match.Home.ID))
-	futchain.TeamAddScore(builder, int32(match.Home.Score))
-	futchain.TeamAddName(builder, homeNameOffset)
-	futchain.TeamAddLongName(builder, homeLongNameOffset)
-	homeOffset := futchain.TeamEnd(builder)
-
-	awayNameOffset := builder.CreateString(match.Away.Name)
-	awayLongNameOffset := builder.CreateString(match.Away.LongName)
-	futchain.TeamStart(builder)
-	futchain.TeamAddId(builder, int32(match.Away.ID))
-	futchain.TeamAddScore(builder, int32(match.Away.Score))
-	futchain.TeamAddName(builder, awayNameOffset)
-	futchain.TeamAddLongName(builder, awayLongNameOffset)
-	awayOffset := futchain.TeamEnd(builder)
 
 	// Encode Status struct directly
 	futchain.StatusStart(builder)
@@ -142,8 +123,8 @@ func EncodeMatch(match *datasource.Match) ([]byte, error) {
 	futchain.MatchAddId(builder, int32(match.ID))
 	futchain.MatchAddLeagueId(builder, int32(match.LeagueID))
 	futchain.MatchAddTime(builder, timeOffset)
-	futchain.MatchAddHome(builder, homeOffset)
-	futchain.MatchAddAway(builder, awayOffset)
+	futchain.MatchAddHome(builder, int32(match.Home.ID)) // Store only team ID
+	futchain.MatchAddAway(builder, int32(match.Away.ID)) // Store only team ID
 	futchain.MatchAddEliminatedTeamId(builder, eliminatedTeamID)
 	futchain.MatchAddStatusId(builder, int32(match.StatusID))
 	futchain.MatchAddTournamentStage(builder, tournamentStageOffset)
@@ -163,32 +144,8 @@ func DecodeMatch(data []byte) (*datasource.Match, error) {
 
 	match := futchain.GetRootAsMatch(data, 0)
 
-	// Decode nested structs using the correct FlatBuffers API
-	var home datasource.Team
-	var away datasource.Team
+	// Decode Status struct
 	var status datasource.Status
-
-	// Get nested objects
-	homeObj := match.Home(nil)
-	if homeObj != nil {
-		home = datasource.Team{
-			ID:       int(homeObj.Id()),
-			Score:    int(homeObj.Score()),
-			Name:     string(homeObj.Name()),
-			LongName: string(homeObj.LongName()),
-		}
-	}
-
-	awayObj := match.Away(nil)
-	if awayObj != nil {
-		away = datasource.Team{
-			ID:       int(awayObj.Id()),
-			Score:    int(awayObj.Score()),
-			Name:     string(awayObj.Name()),
-			LongName: string(awayObj.LongName()),
-		}
-	}
-
 	statusObj := match.Status(nil)
 	if statusObj != nil {
 		status = datasource.Status{
@@ -204,6 +161,14 @@ func DecodeMatch(data []byte) (*datasource.Match, error) {
 	var eliminatedTeamID any
 	if match.EliminatedTeamId() != -1 {
 		eliminatedTeamID = int(match.EliminatedTeamId())
+	}
+
+	// Create Team objects with only IDs (other fields will be empty)
+	home := datasource.Team{
+		ID: int(match.Home()), // Only ID is stored
+	}
+	away := datasource.Team{
+		ID: int(match.Away()), // Only ID is stored
 	}
 
 	return &datasource.Match{

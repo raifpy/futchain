@@ -99,8 +99,8 @@ func TestMatchEncoding(t *testing.T) {
 	assert.Equal(t, match.ID, decodedMatch.ID)
 	assert.Equal(t, match.LeagueID, decodedMatch.LeagueID)
 	assert.Equal(t, match.Time, decodedMatch.Time)
-	assert.Equal(t, match.Home, decodedMatch.Home)
-	assert.Equal(t, match.Away, decodedMatch.Away)
+	assert.Equal(t, match.Home.ID, decodedMatch.Home.ID) // Only ID is preserved
+	assert.Equal(t, match.Away.ID, decodedMatch.Away.ID) // Only ID is preserved
 	assert.Equal(t, match.StatusID, decodedMatch.StatusID)
 	assert.Equal(t, match.TournamentStage, decodedMatch.TournamentStage)
 	assert.Equal(t, match.TimeTS, decodedMatch.TimeTS)

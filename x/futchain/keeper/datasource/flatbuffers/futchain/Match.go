@@ -73,30 +73,28 @@ func (rcv *Match) Time() []byte {
 	return nil
 }
 
-func (rcv *Match) Home(obj *Team) *Team {
+func (rcv *Match) Home() int32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(10))
 	if o != 0 {
-		x := rcv._tab.Indirect(o + rcv._tab.Pos)
-		if obj == nil {
-			obj = new(Team)
-		}
-		obj.Init(rcv._tab.Bytes, x)
-		return obj
+		return rcv._tab.GetInt32(o + rcv._tab.Pos)
 	}
-	return nil
+	return 0
 }
 
-func (rcv *Match) Away(obj *Team) *Team {
+func (rcv *Match) MutateHome(n int32) bool {
+	return rcv._tab.MutateInt32Slot(10, n)
+}
+
+func (rcv *Match) Away() int32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(12))
 	if o != 0 {
-		x := rcv._tab.Indirect(o + rcv._tab.Pos)
-		if obj == nil {
-			obj = new(Team)
-		}
-		obj.Init(rcv._tab.Bytes, x)
-		return obj
+		return rcv._tab.GetInt32(o + rcv._tab.Pos)
 	}
-	return nil
+	return 0
+}
+
+func (rcv *Match) MutateAway(n int32) bool {
+	return rcv._tab.MutateInt32Slot(12, n)
 }
 
 func (rcv *Match) EliminatedTeamId() int32 {
@@ -168,11 +166,11 @@ func MatchAddLeagueId(builder *flatbuffers.Builder, leagueId int32) {
 func MatchAddTime(builder *flatbuffers.Builder, time flatbuffers.UOffsetT) {
 	builder.PrependUOffsetTSlot(2, flatbuffers.UOffsetT(time), 0)
 }
-func MatchAddHome(builder *flatbuffers.Builder, home flatbuffers.UOffsetT) {
-	builder.PrependUOffsetTSlot(3, flatbuffers.UOffsetT(home), 0)
+func MatchAddHome(builder *flatbuffers.Builder, home int32) {
+	builder.PrependInt32Slot(3, home, 0)
 }
-func MatchAddAway(builder *flatbuffers.Builder, away flatbuffers.UOffsetT) {
-	builder.PrependUOffsetTSlot(4, flatbuffers.UOffsetT(away), 0)
+func MatchAddAway(builder *flatbuffers.Builder, away int32) {
+	builder.PrependInt32Slot(4, away, 0)
 }
 func MatchAddEliminatedTeamId(builder *flatbuffers.Builder, eliminatedTeamId int32) {
 	builder.PrependInt32Slot(5, eliminatedTeamId, 0)
