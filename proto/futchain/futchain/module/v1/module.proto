@@ -7,11 +7,11 @@ option go_package = "github.com/raifpy/futchain/x/futchain/types";
 
 // Module is the config object for the module.
 message Module {
-  option (cosmos.app.v1alpha1.module) = { go_import:"github.com/raifpy/futchain/x/futchain" };
-  
+  option (cosmos.app.v1alpha1.module) = {go_import: "github.com/raifpy/futchain/x/futchain"};
+
   // authority defines the custom module authority.
   // If not set, defaults to the governance module.
-  string               authority  = 1;
-  string               api_url    = 2;
-  map<string, string> headers    = 3;
+  string authority = 1;
+  string api_url = 2;
+  map<string, string> headers = 3;
 }

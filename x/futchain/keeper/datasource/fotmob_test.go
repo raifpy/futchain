@@ -12,7 +12,7 @@ func TestFetch(t *testing.T) {
 
 	var headers = make(http.Header)
 	for key, value := range map[string]string{
-		"accept": "*/*",
+		"accept":             "*/*",
 		"accept-language":    "en-US,en;q=0.7",
 		"cache-control":      "no-cache",
 		"dnt":                "1",
