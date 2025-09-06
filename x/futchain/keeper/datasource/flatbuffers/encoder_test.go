@@ -71,6 +71,12 @@ func TestMatchEncoding(t *testing.T) {
 		Started:      true,
 		Cancelled:    false,
 		Finished:     false,
+		Ongoing:      true,
+		LiveTime: datasource.LiveTime{
+			Long:      "45:30",
+			MaxTime:   90,
+			AddedTime: 3,
+		},
 	}
 
 	// Create test match
@@ -104,6 +110,10 @@ func TestMatchEncoding(t *testing.T) {
 	assert.Equal(t, match.StatusID, decodedMatch.StatusID)
 	assert.Equal(t, match.TournamentStage, decodedMatch.TournamentStage)
 	assert.Equal(t, match.TimeTS, decodedMatch.TimeTS)
+	assert.Equal(t, match.Status.Ongoing, decodedMatch.Status.Ongoing)
+	assert.Equal(t, match.Status.LiveTime.Long, decodedMatch.Status.LiveTime.Long)
+	assert.Equal(t, match.Status.LiveTime.MaxTime, decodedMatch.Status.LiveTime.MaxTime)
+	assert.Equal(t, match.Status.LiveTime.AddedTime, decodedMatch.Status.LiveTime.AddedTime)
 
 	// Test hex encoding
 	hexStr, err := encoder.EncodeToHex(match)
@@ -139,6 +149,12 @@ func TestLeagueEncoding(t *testing.T) {
 		Started:      true,
 		Cancelled:    false,
 		Finished:     false,
+		Ongoing:      true,
+		LiveTime: datasource.LiveTime{
+			Long:      "45:30",
+			MaxTime:   90,
+			AddedTime: 3,
+		},
 	}
 
 	// Create test match

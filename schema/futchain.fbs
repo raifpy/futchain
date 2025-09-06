@@ -9,6 +9,13 @@ table Team {
     long_name: string;
 }
 
+// LiveTime represents live match timing information
+table LiveTime {
+    long: string;           // "51:35"
+    max_time: int32;        // 90
+    added_time: int32;      // 0
+}
+
 // Status represents match status information
 table Status {
     utc_time: int64;        // Unix timestamp
@@ -16,6 +23,8 @@ table Status {
     started: bool;
     cancelled: bool;
     finished: bool;
+    ongoing: bool;
+    live_time: LiveTime;
 }
 
 // Match represents a football match
@@ -23,8 +32,8 @@ table Match {
     id: int32;
     league_id: int32;
     time: string;
-    home: Team;
-    away: Team;
+    home: int32;  // Team ID
+    away: int32;  // Team ID
     eliminated_team_id: int32;  // -1 if null
     status_id: int32;
     tournament_stage: string;

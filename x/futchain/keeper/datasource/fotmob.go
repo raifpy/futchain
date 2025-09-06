@@ -121,6 +121,7 @@ type Match struct {
 	StatusID         int    `json:"statusId"`
 	TournamentStage  string `json:"tournamentStage"`
 	Status           Status `json:"status"`
+	Ongoing          bool   `json:"ongoing"`
 	TimeTS           int64  `json:"timeTS"`
 }
 type Team struct {
@@ -139,7 +140,22 @@ type Status struct {
 	Started      bool      `json:"started"`
 	Cancelled    bool      `json:"cancelled"`
 	Finished     bool      `json:"finished"`
+	Ongoing      bool      `json:"ongoing"`
+	LiveTime     LiveTime  `json:"liveTime"`
 }
+
+type LiveTime struct {
+	Long      string `json:"long"`      // "long": "51:35",
+	MaxTime   int    `json:"maxTime"`   // "maxTime": 90,
+	AddedTime int    `json:"addedTime"` // "addedTime": 0
+}
+
+type ComparePriority int
+
+const (
+	None ComparePriority = iota
+	
+)
 
 func (m *Match) Compare(other Match) bool {
 	return m.ID == other.ID && m.LeagueID == other.LeagueID && m.Time == other.Time && m.Home == other.Home && m.Away == other.Away && m.Status == other.Status

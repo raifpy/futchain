@@ -101,8 +101,33 @@ func (rcv *Status) MutateFinished(n bool) bool {
 	return rcv._tab.MutateBoolSlot(12, n)
 }
 
+func (rcv *Status) Ongoing() bool {
+	o := flatbuffers.UOffsetT(rcv._tab.Offset(14))
+	if o != 0 {
+		return rcv._tab.GetBool(o + rcv._tab.Pos)
+	}
+	return false
+}
+
+func (rcv *Status) MutateOngoing(n bool) bool {
+	return rcv._tab.MutateBoolSlot(14, n)
+}
+
+func (rcv *Status) LiveTime(obj *LiveTime) *LiveTime {
+	o := flatbuffers.UOffsetT(rcv._tab.Offset(16))
+	if o != 0 {
+		x := rcv._tab.Indirect(o + rcv._tab.Pos)
+		if obj == nil {
+			obj = new(LiveTime)
+		}
+		obj.Init(rcv._tab.Bytes, x)
+		return obj
+	}
+	return nil
+}
+
 func StatusStart(builder *flatbuffers.Builder) {
-	builder.StartObject(5)
+	builder.StartObject(7)
 }
 func StatusAddUtcTime(builder *flatbuffers.Builder, utcTime int64) {
 	builder.PrependInt64Slot(0, utcTime, 0)
@@ -118,6 +143,12 @@ func StatusAddCancelled(builder *flatbuffers.Builder, cancelled bool) {
 }
 func StatusAddFinished(builder *flatbuffers.Builder, finished bool) {
 	builder.PrependBoolSlot(4, finished, false)
+}
+func StatusAddOngoing(builder *flatbuffers.Builder, ongoing bool) {
+	builder.PrependBoolSlot(5, ongoing, false)
+}
+func StatusAddLiveTime(builder *flatbuffers.Builder, liveTime flatbuffers.UOffsetT) {
+	builder.PrependUOffsetTSlot(6, flatbuffers.UOffsetT(liveTime), 0)
 }
 func StatusEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()

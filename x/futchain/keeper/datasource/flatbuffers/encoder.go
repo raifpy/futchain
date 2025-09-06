@@ -57,6 +57,14 @@ func EncodeStatus(status *datasource.Status) ([]byte, error) {
 
 	builder := flatbuffers.NewBuilder(1024)
 
+	// Create LiveTime table
+	liveTimeLongOffset := builder.CreateString(status.LiveTime.Long)
+	futchain.LiveTimeStart(builder)
+	futchain.LiveTimeAddLong(builder, liveTimeLongOffset)
+	futchain.LiveTimeAddMaxTime(builder, int32(status.LiveTime.MaxTime))
+	futchain.LiveTimeAddAddedTime(builder, int32(status.LiveTime.AddedTime))
+	liveTimeOffset := futchain.LiveTimeEnd(builder)
+
 	// Create the Status table
 	futchain.StatusStart(builder)
 	futchain.StatusAddUtcTime(builder, status.UtcTime.Unix())
@@ -64,6 +72,8 @@ func EncodeStatus(status *datasource.Status) ([]byte, error) {
 	futchain.StatusAddStarted(builder, status.Started)
 	futchain.StatusAddCancelled(builder, status.Cancelled)
 	futchain.StatusAddFinished(builder, status.Finished)
+	futchain.StatusAddOngoing(builder, status.Ongoing)
+	futchain.StatusAddLiveTime(builder, liveTimeOffset)
 	statusOffset := futchain.StatusEnd(builder)
 
 	builder.Finish(statusOffset)
@@ -78,12 +88,25 @@ func DecodeStatus(data []byte) (*datasource.Status, error) {
 
 	status := futchain.GetRootAsStatus(data, 0)
 
+	// Decode LiveTime
+	var liveTime datasource.LiveTime
+	liveTimeObj := status.LiveTime(nil)
+	if liveTimeObj != nil {
+		liveTime = datasource.LiveTime{
+			Long:      string(liveTimeObj.Long()),
+			MaxTime:   int(liveTimeObj.MaxTime()),
+			AddedTime: int(liveTimeObj.AddedTime()),
+		}
+	}
+
 	return &datasource.Status{
 		UtcTime:      time.Unix(status.UtcTime(), 0),
 		PeriodLength: int(status.PeriodLength()),
 		Started:      status.Started(),
 		Cancelled:    status.Cancelled(),
 		Finished:     status.Finished(),
+		Ongoing:      status.Ongoing(),
+		LiveTime:     liveTime,
 	}, nil
 }
 
@@ -99,13 +122,24 @@ func EncodeMatch(match *datasource.Match) ([]byte, error) {
 	timeOffset := builder.CreateString(match.Time)
 	tournamentStageOffset := builder.CreateString(match.TournamentStage)
 
-	// Encode Status struct directly
+	// Encode Status struct directly with new fields
+	// Create LiveTime table
+	liveTimeLongOffset := builder.CreateString(match.Status.LiveTime.Long)
+	futchain.LiveTimeStart(builder)
+	futchain.LiveTimeAddLong(builder, liveTimeLongOffset)
+	futchain.LiveTimeAddMaxTime(builder, int32(match.Status.LiveTime.MaxTime))
+	futchain.LiveTimeAddAddedTime(builder, int32(match.Status.LiveTime.AddedTime))
+	liveTimeOffset := futchain.LiveTimeEnd(builder)
+
+	// Create the Status table
 	futchain.StatusStart(builder)
 	futchain.StatusAddUtcTime(builder, match.Status.UtcTime.Unix())
 	futchain.StatusAddPeriodLength(builder, int32(match.Status.PeriodLength))
 	futchain.StatusAddStarted(builder, match.Status.Started)
 	futchain.StatusAddCancelled(builder, match.Status.Cancelled)
 	futchain.StatusAddFinished(builder, match.Status.Finished)
+	futchain.StatusAddOngoing(builder, match.Status.Ongoing)
+	futchain.StatusAddLiveTime(builder, liveTimeOffset)
 	statusOffset := futchain.StatusEnd(builder)
 
 	// Handle eliminated team ID (convert any to int32)
@@ -144,16 +178,29 @@ func DecodeMatch(data []byte) (*datasource.Match, error) {
 
 	match := futchain.GetRootAsMatch(data, 0)
 
-	// Decode Status struct
+	// Decode Status struct with new fields
 	var status datasource.Status
 	statusObj := match.Status(nil)
 	if statusObj != nil {
+		// Decode LiveTime
+		var liveTime datasource.LiveTime
+		liveTimeObj := statusObj.LiveTime(nil)
+		if liveTimeObj != nil {
+			liveTime = datasource.LiveTime{
+				Long:      string(liveTimeObj.Long()),
+				MaxTime:   int(liveTimeObj.MaxTime()),
+				AddedTime: int(liveTimeObj.AddedTime()),
+			}
+		}
+
 		status = datasource.Status{
 			UtcTime:      time.Unix(statusObj.UtcTime(), 0),
 			PeriodLength: int(statusObj.PeriodLength()),
 			Started:      statusObj.Started(),
 			Cancelled:    statusObj.Cancelled(),
 			Finished:     statusObj.Finished(),
+			Ongoing:      statusObj.Ongoing(),
+			LiveTime:     liveTime,
 		}
 	}
 
