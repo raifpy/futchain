@@ -140,3 +140,7 @@ type Status struct {
 	Cancelled    bool      `json:"cancelled"`
 	Finished     bool      `json:"finished"`
 }
+
+func (m *Match) Compare(other Match) bool {
+	return m.ID == other.ID && m.LeagueID == other.LeagueID && m.Time == other.Time && m.Home == other.Home && m.Away == other.Away && m.Status == other.Status
+}

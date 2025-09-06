@@ -101,28 +101,8 @@ func (rcv *League) Name() []byte {
 	return nil
 }
 
-func (rcv *League) Matches(obj *Match, j int) bool {
-	o := flatbuffers.UOffsetT(rcv._tab.Offset(16))
-	if o != 0 {
-		x := rcv._tab.Vector(o)
-		x += flatbuffers.UOffsetT(j) * 4
-		x = rcv._tab.Indirect(x)
-		obj.Init(rcv._tab.Bytes, x)
-		return true
-	}
-	return false
-}
-
-func (rcv *League) MatchesLength() int {
-	o := flatbuffers.UOffsetT(rcv._tab.Offset(16))
-	if o != 0 {
-		return rcv._tab.VectorLen(o)
-	}
-	return 0
-}
-
 func LeagueStart(builder *flatbuffers.Builder) {
-	builder.StartObject(7)
+	builder.StartObject(6)
 }
 func LeagueAddIsGroup(builder *flatbuffers.Builder, isGroup bool) {
 	builder.PrependBoolSlot(0, isGroup, false)
@@ -141,12 +121,6 @@ func LeagueAddPrimaryId(builder *flatbuffers.Builder, primaryId int32) {
 }
 func LeagueAddName(builder *flatbuffers.Builder, name flatbuffers.UOffsetT) {
 	builder.PrependUOffsetTSlot(5, flatbuffers.UOffsetT(name), 0)
-}
-func LeagueAddMatches(builder *flatbuffers.Builder, matches flatbuffers.UOffsetT) {
-	builder.PrependUOffsetTSlot(6, flatbuffers.UOffsetT(matches), 0)
-}
-func LeagueStartMatchesVector(builder *flatbuffers.Builder, numElems int) flatbuffers.UOffsetT {
-	return builder.StartVector(4, numElems, 4)
 }
 func LeagueEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()

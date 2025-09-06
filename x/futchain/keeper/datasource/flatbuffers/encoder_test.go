@@ -181,8 +181,7 @@ func TestLeagueEncoding(t *testing.T) {
 	assert.Equal(t, league.ID, decodedLeague.ID)
 	assert.Equal(t, league.PrimaryID, decodedLeague.PrimaryID)
 	assert.Equal(t, league.Name, decodedLeague.Name)
-	assert.Len(t, decodedLeague.Matches, 1)
-	assert.Equal(t, league.Matches[0].ID, decodedLeague.Matches[0].ID)
+	assert.Len(t, decodedLeague.Matches, 0) // No matches should be encoded/decoded
 
 	// Test hex encoding
 	hexStr, err := encoder.EncodeToHex(league)

@@ -226,75 +226,7 @@ func EncodeLeague(league *datasource.League) ([]byte, error) {
 		return nil, errors.New("league cannot be nil")
 	}
 
-	builder := flatbuffers.NewBuilder(4096)
-
-	// Encode matches directly (not as byte vectors)
-	var matchOffsets []flatbuffers.UOffsetT
-	for _, match := range league.Matches {
-		// Create string offsets for match
-		timeOffset := builder.CreateString(match.Time)
-		tournamentStageOffset := builder.CreateString(match.TournamentStage)
-
-		// Encode nested Team structs
-		homeNameOffset := builder.CreateString(match.Home.Name)
-		homeLongNameOffset := builder.CreateString(match.Home.LongName)
-		futchain.TeamStart(builder)
-		futchain.TeamAddId(builder, int32(match.Home.ID))
-		futchain.TeamAddScore(builder, int32(match.Home.Score))
-		futchain.TeamAddName(builder, homeNameOffset)
-		futchain.TeamAddLongName(builder, homeLongNameOffset)
-		homeOffset := futchain.TeamEnd(builder)
-
-		awayNameOffset := builder.CreateString(match.Away.Name)
-		awayLongNameOffset := builder.CreateString(match.Away.LongName)
-		futchain.TeamStart(builder)
-		futchain.TeamAddId(builder, int32(match.Away.ID))
-		futchain.TeamAddScore(builder, int32(match.Away.Score))
-		futchain.TeamAddName(builder, awayNameOffset)
-		futchain.TeamAddLongName(builder, awayLongNameOffset)
-		awayOffset := futchain.TeamEnd(builder)
-
-		// Encode Status struct
-		futchain.StatusStart(builder)
-		futchain.StatusAddUtcTime(builder, match.Status.UtcTime.Unix())
-		futchain.StatusAddPeriodLength(builder, int32(match.Status.PeriodLength))
-		futchain.StatusAddStarted(builder, match.Status.Started)
-		futchain.StatusAddCancelled(builder, match.Status.Cancelled)
-		futchain.StatusAddFinished(builder, match.Status.Finished)
-		statusOffset := futchain.StatusEnd(builder)
-
-		// Handle eliminated team ID
-		eliminatedTeamID := int32(-1)
-		if match.EliminatedTeamID != nil {
-			if id, ok := match.EliminatedTeamID.(int); ok {
-				eliminatedTeamID = int32(id)
-			} else if id, ok := match.EliminatedTeamID.(int32); ok {
-				eliminatedTeamID = id
-			}
-		}
-
-		// Create the Match table
-		futchain.MatchStart(builder)
-		futchain.MatchAddId(builder, int32(match.ID))
-		futchain.MatchAddLeagueId(builder, int32(match.LeagueID))
-		futchain.MatchAddTime(builder, timeOffset)
-		futchain.MatchAddHome(builder, homeOffset)
-		futchain.MatchAddAway(builder, awayOffset)
-		futchain.MatchAddEliminatedTeamId(builder, eliminatedTeamID)
-		futchain.MatchAddStatusId(builder, int32(match.StatusID))
-		futchain.MatchAddTournamentStage(builder, tournamentStageOffset)
-		futchain.MatchAddStatus(builder, statusOffset)
-		futchain.MatchAddTimeTs(builder, match.TimeTS)
-		matchOffset := futchain.MatchEnd(builder)
-		matchOffsets = append(matchOffsets, matchOffset)
-	}
-
-	// Create matches vector
-	futchain.LeagueStartMatchesVector(builder, len(matchOffsets))
-	for i := len(matchOffsets) - 1; i >= 0; i-- {
-		builder.PrependUOffsetT(matchOffsets[i])
-	}
-	matchesOffset := builder.EndVector(len(matchOffsets))
+	builder := flatbuffers.NewBuilder(1024)
 
 	// Create string offsets
 	groupNameOffset := builder.CreateString(league.GroupName)
@@ -309,7 +241,6 @@ func EncodeLeague(league *datasource.League) ([]byte, error) {
 	futchain.LeagueAddId(builder, int32(league.ID))
 	futchain.LeagueAddPrimaryId(builder, int32(league.PrimaryID))
 	futchain.LeagueAddName(builder, nameOffset)
-	futchain.LeagueAddMatches(builder, matchesOffset)
 	leagueOffset := futchain.LeagueEnd(builder)
 
 	builder.Finish(leagueOffset)
@@ -324,70 +255,6 @@ func DecodeLeague(data []byte) (*datasource.League, error) {
 
 	league := futchain.GetRootAsLeague(data, 0)
 
-	// Decode matches using the correct FlatBuffers API
-	var matches []datasource.Match
-	for i := 0; i < league.MatchesLength(); i++ {
-		var matchObj futchain.Match
-		if league.Matches(&matchObj, i) {
-			// Convert FlatBuffers Match to datasource.Match
-			var home datasource.Team
-			var away datasource.Team
-			var status datasource.Status
-
-			// Get nested objects
-			homeObj := matchObj.Home(nil)
-			if homeObj != nil {
-				home = datasource.Team{
-					ID:       int(homeObj.Id()),
-					Score:    int(homeObj.Score()),
-					Name:     string(homeObj.Name()),
-					LongName: string(homeObj.LongName()),
-				}
-			}
-
-			awayObj := matchObj.Away(nil)
-			if awayObj != nil {
-				away = datasource.Team{
-					ID:       int(awayObj.Id()),
-					Score:    int(awayObj.Score()),
-					Name:     string(awayObj.Name()),
-					LongName: string(awayObj.LongName()),
-				}
-			}
-
-			statusObj := matchObj.Status(nil)
-			if statusObj != nil {
-				status = datasource.Status{
-					UtcTime:      time.Unix(statusObj.UtcTime(), 0),
-					PeriodLength: int(statusObj.PeriodLength()),
-					Started:      statusObj.Started(),
-					Cancelled:    statusObj.Cancelled(),
-					Finished:     statusObj.Finished(),
-				}
-			}
-
-			// Handle eliminated team ID
-			var eliminatedTeamID any
-			if matchObj.EliminatedTeamId() != -1 {
-				eliminatedTeamID = int(matchObj.EliminatedTeamId())
-			}
-
-			match := datasource.Match{
-				ID:               int(matchObj.Id()),
-				LeagueID:         int(matchObj.LeagueId()),
-				Time:             string(matchObj.Time()),
-				Home:             home,
-				Away:             away,
-				EliminatedTeamID: eliminatedTeamID,
-				StatusID:         int(matchObj.StatusId()),
-				TournamentStage:  string(matchObj.TournamentStage()),
-				Status:           status,
-				TimeTS:           matchObj.TimeTs(),
-			}
-			matches = append(matches, match)
-		}
-	}
-
 	return &datasource.League{
 		IsGroup:   league.IsGroup(),
 		GroupName: string(league.GroupName()),
@@ -395,7 +262,7 @@ func DecodeLeague(data []byte) (*datasource.League, error) {
 		ID:        int(league.Id()),
 		PrimaryID: int(league.PrimaryId()),
 		Name:      string(league.Name()),
-		Matches:   matches,
+		Matches:   []datasource.Match{}, // Empty matches slice
 	}, nil
 }
 
