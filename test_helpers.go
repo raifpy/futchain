@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cosmos/evm/evmd/cmd/evmd/config"
 	testconfig "github.com/cosmos/evm/testutil/config"
+	"github.com/raifpy/futchain/cmd/evmd/config"
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/cometbft/cometbft/abci/types"

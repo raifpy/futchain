@@ -1,4 +1,4 @@
-module github.com/cosmos/evm/evmd
+module github.com/raifpy/futchain
 
 go 1.23.8
 
@@ -18,6 +18,7 @@ require (
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-sdk v0.53.4
 	github.com/cosmos/evm v0.4.0
+	github.com/cosmos/evm/evmd v0.0.0-20250907184600-67950ad934f3
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-go/v10 v10.0.0-beta.0.0.20250528142215-7d579b91ac6b
 	github.com/ethereum/go-ethereum v1.15.11
@@ -277,12 +278,13 @@ replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	// Pin this pebble version to avoid breaking compilation of geth
 	github.com/cockroachdb/pebble => github.com/cockroachdb/pebble v0.0.0-20230928194634-aa077af62593
-	//github.com/cosmos/evm => ../
-	github.com/cosmos/evm/evmd => ./evmd
 	// use Cosmos geth fork
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v0.0.0-20250806193535-2fc7571efa91
 	// Security Advisory https://github.com/advisories/GHSA-h395-qcrw-5vmq
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
+	//github.com/cosmos/evm => ../
+	github.com/raifpy/futchain/evmd => ./evmd
+    github.com/cosmos/evm/evmd => .
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )

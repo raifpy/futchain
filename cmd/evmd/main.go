@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cosmos/evm/evmd/cmd/evmd/cmd"
-	evmdconfig "github.com/cosmos/evm/evmd/cmd/evmd/config"
+	"github.com/raifpy/futchain/cmd/evmd/cmd"
+	evmdconfig "github.com/raifpy/futchain/cmd/evmd/config"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"

@@ -17,9 +17,9 @@ import (
 	cosmosevmcmd "github.com/cosmos/evm/client"
 	cosmosevmkeyring "github.com/cosmos/evm/crypto/keyring"
 	"github.com/cosmos/evm/evmd"
-	evmdconfig "github.com/cosmos/evm/evmd/cmd/evmd/config"
 	cosmosevmserver "github.com/cosmos/evm/server"
 	srvflags "github.com/cosmos/evm/server/flags"
+	evmdconfig "github.com/raifpy/futchain/cmd/evmd/config"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"

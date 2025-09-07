@@ -13,7 +13,7 @@ import (
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/evm/evmd"
-	evmdconfig "github.com/cosmos/evm/evmd/cmd/evmd/config"
+	evmdconfig "github.com/raifpy/futchain/cmd/evmd/config"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 

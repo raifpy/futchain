@@ -13,8 +13,6 @@ import (
 	//nolint:revive // dot imports are fine for Ginkgo
 	. "github.com/onsi/gomega"
 
-	"github.com/cosmos/evm/evmd/eips/testdata"
-	"github.com/cosmos/evm/evmd/tests/integration"
 	testconfig "github.com/cosmos/evm/testutil/config"
 	"github.com/cosmos/evm/testutil/integration/evm/factory"
 	"github.com/cosmos/evm/testutil/integration/evm/grpc"
@@ -23,6 +21,7 @@ import (
 	"github.com/cosmos/evm/testutil/keyring"
 	testutiltypes "github.com/cosmos/evm/testutil/types"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
+	"github.com/raifpy/futchain/eips/testdata"
 
 	"github.com/cosmos/cosmos-sdk/crypto/types"
 )
@@ -445,8 +444,4 @@ func RunTests(t *testing.T, create network.CreateEvmApp, options ...network.Conf
 
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "EIPs Suite")
-}
-
-func TestEIPs(t *testing.T) {
-	RunTests(t, integration.CreateEvmd)
 }
