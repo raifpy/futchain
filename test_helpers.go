@@ -1,15 +1,24 @@
-package example_chain
+package evmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"testing"
 
-	"cosmossdk.io/log"
-	"cosmossdk.io/math"
+	"github.com/cosmos/evm/evmd/cmd/evmd/config"
+	testconfig "github.com/cosmos/evm/testutil/config"
+	"github.com/stretchr/testify/require"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmttypes "github.com/cometbft/cometbft/types"
+
 	dbm "github.com/cosmos/cosmos-db"
+	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
+	ibctesting "github.com/cosmos/ibc-go/v10/testing"
+
+	"cosmossdk.io/log"
+	"cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -20,11 +29,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/evm/cmd/config"
-	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
-	ibctesting "github.com/cosmos/ibc-go/v8/testing"
-	chainconfig "github.com/raifpy/futchainevm/evmd/config"
-	"github.com/stretchr/testify/require"
 )
 
 // SetupOptions defines arguments that are passed into `Simapp` constructor.
@@ -40,18 +44,18 @@ func init() {
 
 	// Set the global SDK config for the tests
 	cfg := sdk.GetConfig()
-	chainconfig.SetBech32Prefixes(cfg)
+	config.SetBech32Prefixes(cfg)
 	config.SetBip44CoinType(cfg)
 }
 
-func setup(withGenesis bool, invCheckPeriod uint, chainID string) (*ExampleChain, GenesisState) {
+func setup(withGenesis bool, invCheckPeriod uint, chainID string, evmChainID uint64) (*EVMD, GenesisState) {
 	db := dbm.NewMemDB()
 
 	appOptions := make(simtestutil.AppOptionsMap, 0)
-	appOptions[flags.FlagHome] = DefaultNodeHome
+	appOptions[flags.FlagHome] = defaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = invCheckPeriod
 
-	app := NewExampleApp(log.NewNopLogger(), db, nil, true, appOptions, EvmAppOptions, baseapp.SetChainID(chainID))
+	app := NewExampleApp(log.NewNopLogger(), db, nil, true, appOptions, evmChainID, testconfig.EvmAppOptions, baseapp.SetChainID(chainID))
 	if withGenesis {
 		return app, app.DefaultGenesis()
 	}
@@ -59,8 +63,8 @@ func setup(withGenesis bool, invCheckPeriod uint, chainID string) (*ExampleChain
 	return app, GenesisState{}
 }
 
-// Setup initializes a new ExampleChain. A Nop logger is set in ExampleChain.
-func Setup(t *testing.T, chainID string) *ExampleChain {
+// Setup initializes a new EVMD. A Nop logger is set in EVMD.
+func Setup(t *testing.T, chainID string, evmChainID uint64) *EVMD {
 	t.Helper()
 
 	privVal := mock.NewPV()
@@ -79,19 +83,19 @@ func Setup(t *testing.T, chainID string) *ExampleChain {
 		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(100000000000000))),
 	}
 
-	app := SetupWithGenesisValSet(t, chainID, valSet, []authtypes.GenesisAccount{acc}, balance)
+	app := SetupWithGenesisValSet(t, chainID, evmChainID, valSet, []authtypes.GenesisAccount{acc}, balance)
 
 	return app
 }
 
-// SetupWithGenesisValSet initializes a new ExampleChain with a validator set and genesis accounts
+// SetupWithGenesisValSet initializes a new EVMD with a validator set and genesis accounts
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit in the default token of the simapp from first genesis
-// account. A Nop logger is set in ExampleChain.
-func SetupWithGenesisValSet(t *testing.T, chainID string, valSet *cmttypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *ExampleChain {
+// account. A Nop logger is set in EVMD.
+func SetupWithGenesisValSet(t *testing.T, chainID string, evmChainID uint64, valSet *cmttypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *EVMD {
 	t.Helper()
 
-	app, genesisState := setup(true, 5, chainID)
+	app, genesisState := setup(true, 5, chainID, evmChainID)
 	genesisState, err := simtestutil.GenesisStateWithValSet(app.AppCodec(), genesisState, valSet, genAccs, balances...)
 	require.NoError(t, err)
 
@@ -120,14 +124,15 @@ func SetupWithGenesisValSet(t *testing.T, chainID string, valSet *cmttypes.Valid
 // SetupTestingApp initializes the IBC-go testing application
 // need to keep this design to comply with the ibctesting SetupTestingApp func
 // and be able to set the chainID for the tests properly
-func SetupTestingApp(chainID string) func() (ibctesting.TestingApp, map[string]json.RawMessage) {
+func SetupTestingApp(chainID string, evmChainID uint64) func() (ibctesting.TestingApp, map[string]json.RawMessage) {
 	return func() (ibctesting.TestingApp, map[string]json.RawMessage) {
 		db := dbm.NewMemDB()
 		app := NewExampleApp(
 			log.NewNopLogger(),
 			db, nil, true,
-			simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
-			EvmAppOptions,
+			simtestutil.NewAppOptionsWithFlagHome(defaultNodeHome),
+			evmChainID,
+			testconfig.EvmAppOptions,
 			baseapp.SetChainID(chainID),
 		)
 		return app, app.DefaultGenesis()

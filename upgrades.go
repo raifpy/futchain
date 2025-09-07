@@ -1,5 +1,5 @@
-package example_chain
+package evmd
 
-func (app ExampleChain) RegisterUpgradeHandlers() {
+func (app EVMD) RegisterUpgradeHandlers() {
 	// No upgrades registered yet
 }

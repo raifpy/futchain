@@ -1,20 +1,18 @@
-package example_chain
+package evmd
 
 import (
 	"fmt"
 	"maps"
 
-	evidencekeeper "cosmossdk.io/x/evidence/keeper"
-	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	distributionkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
-	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/vm"
+
 	bankprecompile "github.com/cosmos/evm/precompiles/bank"
 	"github.com/cosmos/evm/precompiles/bech32"
+	cmn "github.com/cosmos/evm/precompiles/common"
 	distprecompile "github.com/cosmos/evm/precompiles/distribution"
-	evidenceprecompile "github.com/cosmos/evm/precompiles/evidence"
 	govprecompile "github.com/cosmos/evm/precompiles/gov"
 	ics20precompile "github.com/cosmos/evm/precompiles/ics20"
 	"github.com/cosmos/evm/precompiles/p256"
@@ -22,11 +20,53 @@ import (
 	stakingprecompile "github.com/cosmos/evm/precompiles/staking"
 	erc20Keeper "github.com/cosmos/evm/x/erc20/keeper"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
-	"github.com/cosmos/evm/x/vm/core/vm"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
-	channelkeeper "github.com/cosmos/ibc-go/v8/modules/core/04-channel/keeper"
-	"github.com/ethereum/go-ethereum/common"
+	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
+
+	"cosmossdk.io/core/address"
+	"github.com/cosmos/cosmos-sdk/codec"
+	distributionkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 )
+
+// Optionals define some optional params that can be applied to _some_ precompiles.
+// Extend this struct, add a sane default to defaultOptionals, and an Option function to provide users with a non-breaking
+// way to provide custom args to certain precompiles.
+type Optionals struct {
+	AddressCodec       address.Codec // used by gov/staking
+	ValidatorAddrCodec address.Codec // used by slashing
+	ConsensusAddrCodec address.Codec // used by slashing
+}
+
+func defaultOptionals() Optionals {
+	return Optionals{
+		AddressCodec:       addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
+		ValidatorAddrCodec: addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		ConsensusAddrCodec: addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+	}
+}
+
+type Option func(opts *Optionals)
+
+func WithAddressCodec(codec address.Codec) Option {
+	return func(opts *Optionals) {
+		opts.AddressCodec = codec
+	}
+}
+
+func WithValidatorAddrCodec(codec address.Codec) Option {
+	return func(opts *Optionals) {
+		opts.ValidatorAddrCodec = codec
+	}
+}
+
+func WithConsensusAddrCodec(codec address.Codec) Option {
+	return func(opts *Optionals) {
+		opts.ConsensusAddrCodec = codec
+	}
+}
 
 const bech32PrecompileBaseGas = 6_000
 
@@ -36,18 +76,22 @@ const bech32PrecompileBaseGas = 6_000
 func NewAvailableStaticPrecompiles(
 	stakingKeeper stakingkeeper.Keeper,
 	distributionKeeper distributionkeeper.Keeper,
-	bankKeeper bankkeeper.Keeper,
+	bankKeeper cmn.BankKeeper,
 	erc20Keeper erc20Keeper.Keeper,
-	authzKeeper authzkeeper.Keeper,
 	transferKeeper transferkeeper.Keeper,
-	channelKeeper channelkeeper.Keeper,
+	channelKeeper *channelkeeper.Keeper,
 	evmKeeper *evmkeeper.Keeper,
 	govKeeper govkeeper.Keeper,
 	slashingKeeper slashingkeeper.Keeper,
-	evidenceKeeper evidencekeeper.Keeper,
+	codec codec.Codec,
+	opts ...Option,
 ) map[common.Address]vm.PrecompiledContract {
+	options := defaultOptionals()
+	for _, opt := range opts {
+		opt(&options)
+	}
 	// Clone the mapping from the latest EVM fork.
-	precompiles := maps.Clone(vm.PrecompiledContractsBerlin)
+	precompiles := maps.Clone(vm.PrecompiledContractsPrague)
 
 	// secp256r1 precompile as per EIP-7212
 	p256Precompile := &p256.Precompile{}
@@ -57,7 +101,7 @@ func NewAvailableStaticPrecompiles(
 		panic(fmt.Errorf("failed to instantiate bech32 precompile: %w", err))
 	}
 
-	stakingPrecompile, err := stakingprecompile.NewPrecompile(stakingKeeper, authzKeeper)
+	stakingPrecompile, err := stakingprecompile.NewPrecompile(stakingKeeper, options.AddressCodec)
 	if err != nil {
 		panic(fmt.Errorf("failed to instantiate staking precompile: %w", err))
 	}
@@ -65,18 +109,18 @@ func NewAvailableStaticPrecompiles(
 	distributionPrecompile, err := distprecompile.NewPrecompile(
 		distributionKeeper,
 		stakingKeeper,
-		authzKeeper,
 		evmKeeper,
+		options.AddressCodec,
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to instantiate distribution precompile: %w", err))
 	}
 
 	ibcTransferPrecompile, err := ics20precompile.NewPrecompile(
+		bankKeeper,
 		stakingKeeper,
 		transferKeeper,
 		channelKeeper,
-		authzKeeper,
 		evmKeeper,
 	)
 	if err != nil {
@@ -88,19 +132,14 @@ func NewAvailableStaticPrecompiles(
 		panic(fmt.Errorf("failed to instantiate bank precompile: %w", err))
 	}
 
-	govPrecompile, err := govprecompile.NewPrecompile(govKeeper, authzKeeper)
+	govPrecompile, err := govprecompile.NewPrecompile(govKeeper, codec, options.AddressCodec)
 	if err != nil {
 		panic(fmt.Errorf("failed to instantiate gov precompile: %w", err))
 	}
 
-	slashingPrecompile, err := slashingprecompile.NewPrecompile(slashingKeeper, authzKeeper)
+	slashingPrecompile, err := slashingprecompile.NewPrecompile(slashingKeeper, options.ValidatorAddrCodec, options.ConsensusAddrCodec)
 	if err != nil {
 		panic(fmt.Errorf("failed to instantiate slashing precompile: %w", err))
-	}
-
-	evidencePrecompile, err := evidenceprecompile.NewPrecompile(evidenceKeeper, authzKeeper)
-	if err != nil {
-		panic(fmt.Errorf("failed to instantiate evidence precompile: %w", err))
 	}
 
 	// Stateless precompiles
@@ -114,7 +153,6 @@ func NewAvailableStaticPrecompiles(
 	precompiles[bankPrecompile.Address()] = bankPrecompile
 	precompiles[govPrecompile.Address()] = govPrecompile
 	precompiles[slashingPrecompile.Address()] = slashingPrecompile
-	precompiles[evidencePrecompile.Address()] = evidencePrecompile
 
 	return precompiles
 }

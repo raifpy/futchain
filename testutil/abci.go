@@ -4,26 +4,30 @@ import (
 	"fmt"
 	"time"
 
-	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	cmttypes "github.com/cometbft/cometbft/types"
+
+	"github.com/cosmos/evm"
+	"github.com/cosmos/evm/testutil/integration"
+	"github.com/cosmos/evm/testutil/tx"
+
+	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
+
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/cosmos/evm/testutil/tx"
-	app "github.com/raifpy/futchainevm"
 )
 
 // Commit commits a block at a given time. Reminder: At the end of each
-// Tendermint Consensus round the following methods are run
+// CometBFT Consensus round the following methods are run
+// TODO: update with new ABCI++ consideration
 //  1. BeginBlock
 //  2. DeliverTx
 //  3. EndBlock
 //  4. Commit
-func Commit(ctx sdk.Context, app *app.ExampleChain, t time.Duration, vs *cmttypes.ValidatorSet) (sdk.Context, error) {
+func Commit(ctx sdk.Context, app evm.EvmApp, t time.Duration, vs *cmttypes.ValidatorSet) (sdk.Context, error) {
 	header, err := commit(ctx, app, t, vs)
 	if err != nil {
 		return ctx, err
@@ -35,7 +39,7 @@ func Commit(ctx sdk.Context, app *app.ExampleChain, t time.Duration, vs *cmttype
 // CommitAndCreateNewCtx commits a block at a given time creating a ctx with the current settings
 // This is useful to keep test settings that could be affected by EndBlockers, e.g.
 // setting a baseFee == 0 and expecting this condition to continue after commit
-func CommitAndCreateNewCtx(ctx sdk.Context, app *app.ExampleChain, t time.Duration, vs *cmttypes.ValidatorSet) (sdk.Context, error) {
+func CommitAndCreateNewCtx(ctx sdk.Context, app evm.EvmApp, t time.Duration, vs *cmttypes.ValidatorSet) (sdk.Context, error) {
 	header, err := commit(ctx, app, t, vs)
 	if err != nil {
 		return ctx, err
@@ -44,7 +48,7 @@ func CommitAndCreateNewCtx(ctx sdk.Context, app *app.ExampleChain, t time.Durati
 	// NewContext function keeps the multistore
 	// but resets other context fields
 	// GasMeter is set as InfiniteGasMeter
-	newCtx := app.BaseApp.NewContextLegacy(false, header)
+	newCtx := app.GetBaseApp().NewContextLegacy(false, header)
 	// set the reseted fields to keep the current ctx settings
 	newCtx = newCtx.WithMinGasPrices(ctx.MinGasPrices())
 	newCtx = newCtx.WithEventManager(ctx.EventManager())
@@ -57,12 +61,11 @@ func CommitAndCreateNewCtx(ctx sdk.Context, app *app.ExampleChain, t time.Durati
 // DeliverTx delivers a cosmos tx for a given set of msgs
 func DeliverTx(
 	ctx sdk.Context,
-	exampleApp *app.ExampleChain,
+	exampleApp evm.EvmApp,
 	priv cryptotypes.PrivKey,
 	gasPrice *sdkmath.Int,
 	msgs ...sdk.Msg,
 ) (abci.ExecTxResult, error) {
-
 	txConfig := exampleApp.GetTxConfig()
 	tx, err := tx.PrepareCosmosTx(
 		ctx,
@@ -86,7 +89,7 @@ func DeliverTx(
 // If a private key is provided, it will attempt to sign all messages with the given private key,
 // otherwise, it will assume the messages have already been signed.
 func DeliverEthTx(
-	exampleApp *app.ExampleChain,
+	exampleApp evm.EvmApp,
 	priv cryptotypes.PrivKey,
 	msgs ...sdk.Msg,
 ) (abci.ExecTxResult, error) {
@@ -102,7 +105,7 @@ func DeliverEthTx(
 	}
 
 	codec := exampleApp.AppCodec()
-	if _, err := CheckEthTxResponse(res, codec); err != nil {
+	if _, err := integration.CheckEthTxResponse(res, codec); err != nil {
 		return res, err
 	}
 	return res, nil
@@ -113,7 +116,7 @@ func DeliverEthTx(
 // otherwise, it will assume the messages have already been signed. It does not check if the Eth tx is
 // successful or not.
 func DeliverEthTxWithoutCheck(
-	exampleApp *app.ExampleChain,
+	exampleApp evm.EvmApp,
 	priv cryptotypes.PrivKey,
 	msgs ...sdk.Msg,
 ) (abci.ExecTxResult, error) {
@@ -135,7 +138,7 @@ func DeliverEthTxWithoutCheck(
 // CheckTx checks a cosmos tx for a given set of msgs
 func CheckTx(
 	ctx sdk.Context,
-	exampleApp *app.ExampleChain,
+	exampleApp evm.EvmApp,
 	priv cryptotypes.PrivKey,
 	gasPrice *sdkmath.Int,
 	msgs ...sdk.Msg,
@@ -162,7 +165,7 @@ func CheckTx(
 
 // CheckEthTx checks a Ethereum tx for a given set of msgs
 func CheckEthTx(
-	exampleApp *app.ExampleChain,
+	exampleApp evm.EvmApp,
 	priv cryptotypes.PrivKey,
 	msgs ...sdk.Msg,
 ) (abci.ResponseCheckTx, error) {
@@ -176,7 +179,7 @@ func CheckEthTx(
 }
 
 // BroadcastTxBytes encodes a transaction and calls DeliverTx on the app.
-func BroadcastTxBytes(app *app.ExampleChain, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.ExecTxResult, error) {
+func BroadcastTxBytes(app evm.EvmApp, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.ExecTxResult, error) {
 	// bz are bytes to be broadcasted over the network
 	bz, err := txEncoder(tx)
 	if err != nil {
@@ -185,7 +188,7 @@ func BroadcastTxBytes(app *app.ExampleChain, txEncoder sdk.TxEncoder, tx sdk.Tx)
 
 	req := abci.RequestFinalizeBlock{Txs: [][]byte{bz}}
 
-	res, err := app.BaseApp.FinalizeBlock(&req)
+	res, err := app.GetBaseApp().FinalizeBlock(&req)
 	if err != nil {
 		return abci.ExecTxResult{}, err
 	}
@@ -202,7 +205,7 @@ func BroadcastTxBytes(app *app.ExampleChain, txEncoder sdk.TxEncoder, tx sdk.Tx)
 
 // commit is a private helper function that runs the EndBlocker logic, commits the changes,
 // updates the header, runs the BeginBlocker function and returns the updated header
-func commit(ctx sdk.Context, app *app.ExampleChain, t time.Duration, vs *cmttypes.ValidatorSet) (tmproto.Header, error) {
+func commit(ctx sdk.Context, app evm.EvmApp, t time.Duration, vs *cmttypes.ValidatorSet) (tmproto.Header, error) {
 	header := ctx.BlockHeader()
 	req := abci.RequestFinalizeBlock{Height: header.Height}
 
@@ -240,14 +243,14 @@ func commit(ctx sdk.Context, app *app.ExampleChain, t time.Duration, vs *cmttype
 }
 
 // checkTxBytes encodes a transaction and calls checkTx on the app.
-func checkTxBytes(app *app.ExampleChain, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.ResponseCheckTx, error) {
+func checkTxBytes(app evm.EvmApp, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.ResponseCheckTx, error) {
 	bz, err := txEncoder(tx)
 	if err != nil {
 		return abci.ResponseCheckTx{}, err
 	}
 
 	req := abci.RequestCheckTx{Tx: bz}
-	res, err := app.BaseApp.CheckTx(&req)
+	res, err := app.GetBaseApp().CheckTx(&req)
 	if err != nil {
 		return abci.ResponseCheckTx{}, err
 	}
