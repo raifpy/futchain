@@ -13,7 +13,6 @@ func TestTeamEncoding(t *testing.T) {
 	// Create a test team
 	team := &datasource.Team{
 		ID:       123,
-		Score:    2,
 		Name:     "Arsenal",
 		LongName: "Arsenal Football Club",
 	}
@@ -28,7 +27,6 @@ func TestTeamEncoding(t *testing.T) {
 	decodedTeam, err := encoder.DecodeFromBinary(data)
 	require.NoError(t, err)
 	assert.Equal(t, team.ID, decodedTeam.ID)
-	assert.Equal(t, team.Score, decodedTeam.Score)
 	assert.Equal(t, team.Name, decodedTeam.Name)
 	assert.Equal(t, team.LongName, decodedTeam.LongName)
 
@@ -214,7 +212,6 @@ func TestUniversalEncoder(t *testing.T) {
 	// Create test data
 	team := &datasource.Team{
 		ID:       123,
-		Score:    2,
 		Name:     "Arsenal",
 		LongName: "Arsenal Football Club",
 	}
