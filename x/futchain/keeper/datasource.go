@@ -73,6 +73,15 @@ func (k *Keeper) SaveLeagueIfNotExists(ctx context.Context, league datasource.Le
 	return true, k.storeService.OpenKVStore(ctx).Set(key, buf)
 }
 
+func (k *Keeper) GetLeague(ctx context.Context, id int) (*datasource.League, error) {
+	key := k.LeagueKey(id)
+	buf, err := k.storeService.OpenKVStore(ctx).Get(key)
+	if err != nil {
+		return nil, err
+	}
+	return flatbuffers.NewLeagueEncoder().DecodeFromBinary(buf)
+}
+
 func (k *Keeper) GetMatch(ctx context.Context, id int) (*datasource.Match, error) {
 	key := k.MatchKey(id)
 	buf, err := k.storeService.OpenKVStore(ctx).Get(key)

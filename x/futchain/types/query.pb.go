@@ -114,35 +114,453 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+// QueryTeamRequest defines the QueryTeamRequest message.
+type QueryTeamRequest struct {
+	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryTeamRequest) Reset()         { *m = QueryTeamRequest{} }
+func (m *QueryTeamRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryTeamRequest) ProtoMessage()    {}
+func (*QueryTeamRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1d8828dc5742c02c, []int{2}
+}
+func (m *QueryTeamRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryTeamRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryTeamRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryTeamRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTeamRequest.Merge(m, src)
+}
+func (m *QueryTeamRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryTeamRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTeamRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryTeamRequest proto.InternalMessageInfo
+
+func (m *QueryTeamRequest) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+// QueryTeamResponse defines the QueryTeamResponse message.
+type QueryTeamResponse struct {
+	Id   int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (m *QueryTeamResponse) Reset()         { *m = QueryTeamResponse{} }
+func (m *QueryTeamResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryTeamResponse) ProtoMessage()    {}
+func (*QueryTeamResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1d8828dc5742c02c, []int{3}
+}
+func (m *QueryTeamResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryTeamResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryTeamResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryTeamResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTeamResponse.Merge(m, src)
+}
+func (m *QueryTeamResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryTeamResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTeamResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryTeamResponse proto.InternalMessageInfo
+
+func (m *QueryTeamResponse) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *QueryTeamResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+// QueryLeagueRequest defines the QueryLeagueRequest message.
+type QueryLeagueRequest struct {
+	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryLeagueRequest) Reset()         { *m = QueryLeagueRequest{} }
+func (m *QueryLeagueRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryLeagueRequest) ProtoMessage()    {}
+func (*QueryLeagueRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1d8828dc5742c02c, []int{4}
+}
+func (m *QueryLeagueRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryLeagueRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryLeagueRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryLeagueRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryLeagueRequest.Merge(m, src)
+}
+func (m *QueryLeagueRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryLeagueRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryLeagueRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryLeagueRequest proto.InternalMessageInfo
+
+func (m *QueryLeagueRequest) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+// QueryLeagueResponse defines the QueryLeagueResponse message.
+type QueryLeagueResponse struct {
+	Id        int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name      string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	GroupName string `protobuf:"bytes,3,opt,name=group_name,json=groupName,proto3" json:"group_name,omitempty"`
+}
+
+func (m *QueryLeagueResponse) Reset()         { *m = QueryLeagueResponse{} }
+func (m *QueryLeagueResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryLeagueResponse) ProtoMessage()    {}
+func (*QueryLeagueResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1d8828dc5742c02c, []int{5}
+}
+func (m *QueryLeagueResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryLeagueResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryLeagueResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryLeagueResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryLeagueResponse.Merge(m, src)
+}
+func (m *QueryLeagueResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryLeagueResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryLeagueResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryLeagueResponse proto.InternalMessageInfo
+
+func (m *QueryLeagueResponse) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *QueryLeagueResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *QueryLeagueResponse) GetGroupName() string {
+	if m != nil {
+		return m.GroupName
+	}
+	return ""
+}
+
+// QueryMatchRequest defines the QueryMatchRequest message.
+type QueryMatchRequest struct {
+	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryMatchRequest) Reset()         { *m = QueryMatchRequest{} }
+func (m *QueryMatchRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryMatchRequest) ProtoMessage()    {}
+func (*QueryMatchRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1d8828dc5742c02c, []int{6}
+}
+func (m *QueryMatchRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryMatchRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryMatchRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryMatchRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryMatchRequest.Merge(m, src)
+}
+func (m *QueryMatchRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryMatchRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryMatchRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryMatchRequest proto.InternalMessageInfo
+
+func (m *QueryMatchRequest) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+// QueryMatchResponse defines the QueryMatchResponse message.
+type QueryMatchResponse struct {
+	Id        int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	LeagueId  int64  `protobuf:"varint,2,opt,name=league_id,json=leagueId,proto3" json:"league_id,omitempty"`
+	Name      string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Time      string `protobuf:"bytes,4,opt,name=time,proto3" json:"time,omitempty"`
+	HomeId    int64  `protobuf:"varint,5,opt,name=home_id,json=homeId,proto3" json:"home_id,omitempty"`
+	HomeScore int64  `protobuf:"varint,6,opt,name=home_score,json=homeScore,proto3" json:"home_score,omitempty"`
+	HomeName  string `protobuf:"bytes,7,opt,name=home_name,json=homeName,proto3" json:"home_name,omitempty"`
+	AwayId    int64  `protobuf:"varint,8,opt,name=away_id,json=awayId,proto3" json:"away_id,omitempty"`
+	AwayScore int64  `protobuf:"varint,9,opt,name=away_score,json=awayScore,proto3" json:"away_score,omitempty"`
+	AwayName  string `protobuf:"bytes,10,opt,name=away_name,json=awayName,proto3" json:"away_name,omitempty"`
+	Started   bool   `protobuf:"varint,11,opt,name=started,proto3" json:"started,omitempty"`
+	Cancelled bool   `protobuf:"varint,12,opt,name=cancelled,proto3" json:"cancelled,omitempty"`
+	Finished  bool   `protobuf:"varint,13,opt,name=finished,proto3" json:"finished,omitempty"`
+}
+
+func (m *QueryMatchResponse) Reset()         { *m = QueryMatchResponse{} }
+func (m *QueryMatchResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryMatchResponse) ProtoMessage()    {}
+func (*QueryMatchResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1d8828dc5742c02c, []int{7}
+}
+func (m *QueryMatchResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryMatchResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryMatchResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryMatchResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryMatchResponse.Merge(m, src)
+}
+func (m *QueryMatchResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryMatchResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryMatchResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryMatchResponse proto.InternalMessageInfo
+
+func (m *QueryMatchResponse) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *QueryMatchResponse) GetLeagueId() int64 {
+	if m != nil {
+		return m.LeagueId
+	}
+	return 0
+}
+
+func (m *QueryMatchResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *QueryMatchResponse) GetTime() string {
+	if m != nil {
+		return m.Time
+	}
+	return ""
+}
+
+func (m *QueryMatchResponse) GetHomeId() int64 {
+	if m != nil {
+		return m.HomeId
+	}
+	return 0
+}
+
+func (m *QueryMatchResponse) GetHomeScore() int64 {
+	if m != nil {
+		return m.HomeScore
+	}
+	return 0
+}
+
+func (m *QueryMatchResponse) GetHomeName() string {
+	if m != nil {
+		return m.HomeName
+	}
+	return ""
+}
+
+func (m *QueryMatchResponse) GetAwayId() int64 {
+	if m != nil {
+		return m.AwayId
+	}
+	return 0
+}
+
+func (m *QueryMatchResponse) GetAwayScore() int64 {
+	if m != nil {
+		return m.AwayScore
+	}
+	return 0
+}
+
+func (m *QueryMatchResponse) GetAwayName() string {
+	if m != nil {
+		return m.AwayName
+	}
+	return ""
+}
+
+func (m *QueryMatchResponse) GetStarted() bool {
+	if m != nil {
+		return m.Started
+	}
+	return false
+}
+
+func (m *QueryMatchResponse) GetCancelled() bool {
+	if m != nil {
+		return m.Cancelled
+	}
+	return false
+}
+
+func (m *QueryMatchResponse) GetFinished() bool {
+	if m != nil {
+		return m.Finished
+	}
+	return false
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "futchain.futchain.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "futchain.futchain.v1.QueryParamsResponse")
+	proto.RegisterType((*QueryTeamRequest)(nil), "futchain.futchain.v1.QueryTeamRequest")
+	proto.RegisterType((*QueryTeamResponse)(nil), "futchain.futchain.v1.QueryTeamResponse")
+	proto.RegisterType((*QueryLeagueRequest)(nil), "futchain.futchain.v1.QueryLeagueRequest")
+	proto.RegisterType((*QueryLeagueResponse)(nil), "futchain.futchain.v1.QueryLeagueResponse")
+	proto.RegisterType((*QueryMatchRequest)(nil), "futchain.futchain.v1.QueryMatchRequest")
+	proto.RegisterType((*QueryMatchResponse)(nil), "futchain.futchain.v1.QueryMatchResponse")
 }
 
 func init() { proto.RegisterFile("futchain/futchain/v1/query.proto", fileDescriptor_1d8828dc5742c02c) }
 
 var fileDescriptor_1d8828dc5742c02c = []byte{
-	// 319 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x48, 0x2b, 0x2d, 0x49,
-	0xce, 0x48, 0xcc, 0xcc, 0xd3, 0x87, 0x33, 0xca, 0x0c, 0xf5, 0x0b, 0x4b, 0x53, 0x8b, 0x2a, 0xf5,
-	0x0a, 0x8a, 0xf2, 0x4b, 0xf2, 0x85, 0x44, 0x60, 0x12, 0x7a, 0x70, 0x46, 0x99, 0xa1, 0x94, 0x60,
-	0x62, 0x6e, 0x66, 0x5e, 0xbe, 0x3e, 0x98, 0x84, 0x28, 0x94, 0xd2, 0x4a, 0xce, 0x2f, 0xce, 0xcd,
-	0x2f, 0xd6, 0x4f, 0x4a, 0x2c, 0x4e, 0x85, 0x98, 0xa0, 0x5f, 0x66, 0x98, 0x94, 0x5a, 0x92, 0x68,
-	0xa8, 0x5f, 0x90, 0x98, 0x9e, 0x99, 0x97, 0x58, 0x92, 0x99, 0x9f, 0x07, 0x55, 0xab, 0x88, 0xd5,
-	0xda, 0x82, 0xc4, 0xa2, 0xc4, 0xdc, 0x62, 0xa8, 0x12, 0x91, 0xf4, 0xfc, 0xf4, 0x7c, 0x30, 0x53,
-	0x1f, 0xc4, 0x82, 0x8a, 0xca, 0xa4, 0xe7, 0xe7, 0xa7, 0xe7, 0xa4, 0xea, 0x27, 0x16, 0x64, 0xea,
-	0x27, 0xe6, 0xe5, 0xe5, 0x97, 0x80, 0x4d, 0x85, 0xea, 0x51, 0x12, 0xe1, 0x12, 0x0a, 0x04, 0x59,
-	0x1c, 0x00, 0x36, 0x28, 0x28, 0xb5, 0xb0, 0x34, 0xb5, 0xb8, 0x44, 0x29, 0x8c, 0x4b, 0x18, 0x45,
-	0xb4, 0xb8, 0x20, 0x3f, 0xaf, 0x38, 0x55, 0xc8, 0x9e, 0x8b, 0x0d, 0x62, 0xa1, 0x04, 0xa3, 0x02,
-	0xa3, 0x06, 0xb7, 0x91, 0x8c, 0x1e, 0x36, 0x9f, 0xea, 0x41, 0x74, 0x39, 0x71, 0x9e, 0xb8, 0x27,
-	0xcf, 0xb0, 0xe2, 0xf9, 0x06, 0x2d, 0xc6, 0x20, 0xa8, 0x36, 0xa3, 0x29, 0x8c, 0x5c, 0xac, 0x60,
-	0x83, 0x85, 0xba, 0x18, 0xb9, 0xd8, 0x20, 0xea, 0x84, 0x34, 0xb0, 0x9b, 0x82, 0xe9, 0x2c, 0x29,
-	0x4d, 0x22, 0x54, 0x42, 0x9c, 0xaa, 0xa4, 0xdd, 0x74, 0xf9, 0xc9, 0x64, 0x26, 0x55, 0x21, 0x65,
-	0xfd, 0xa2, 0xc4, 0xcc, 0xb4, 0x82, 0x4a, 0x7d, 0x3c, 0xc1, 0xe7, 0xe4, 0x7a, 0xe2, 0x91, 0x1c,
-	0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1,
-	0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0xda, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9,
-	0xf9, 0xb9, 0x18, 0x06, 0x55, 0x20, 0x98, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0x20,
-	0x35, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0xff, 0x4f, 0x25, 0xd7, 0x22, 0x02, 0x00, 0x00,
+	// 672 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0x41, 0x4f, 0x13, 0x41,
+	0x14, 0xee, 0xb6, 0xa5, 0x74, 0x07, 0x35, 0x32, 0x92, 0xb8, 0xa9, 0x58, 0xeb, 0xa2, 0xb0, 0x40,
+	0xd2, 0xb1, 0x78, 0xf0, 0x68, 0x42, 0xe2, 0x81, 0x44, 0x8d, 0x56, 0x63, 0x8c, 0x17, 0x32, 0xdd,
+	0x1d, 0xb6, 0x93, 0x74, 0x77, 0x96, 0xdd, 0x59, 0xb4, 0x31, 0x5e, 0xbc, 0x98, 0xe8, 0x41, 0x13,
+	0xff, 0x84, 0x47, 0x7f, 0x81, 0x67, 0x8e, 0x24, 0x5e, 0x3c, 0x19, 0x03, 0x26, 0xfc, 0x0d, 0x33,
+	0x6f, 0x86, 0x52, 0x04, 0x16, 0x2e, 0xe4, 0xcd, 0xf7, 0xbe, 0xf9, 0xbe, 0xef, 0x2d, 0xf3, 0x8a,
+	0x5a, 0x1b, 0xb9, 0xf4, 0xfb, 0x94, 0xc7, 0x64, 0x54, 0x6c, 0x75, 0xc8, 0x66, 0xce, 0xd2, 0x61,
+	0x3b, 0x49, 0x85, 0x14, 0x78, 0xe6, 0xa0, 0xd1, 0x1e, 0x15, 0x5b, 0x9d, 0xc6, 0x34, 0x8d, 0x78,
+	0x2c, 0x08, 0xfc, 0xd5, 0xc4, 0xc6, 0x92, 0x2f, 0xb2, 0x48, 0x64, 0xa4, 0x47, 0x33, 0xa6, 0x15,
+	0xc8, 0x56, 0xa7, 0xc7, 0x24, 0xed, 0x90, 0x84, 0x86, 0x3c, 0xa6, 0x92, 0x8b, 0xd8, 0x70, 0x6f,
+	0x9e, 0x68, 0x9b, 0xd0, 0x94, 0x46, 0x99, 0xa1, 0xcc, 0x84, 0x22, 0x14, 0x50, 0x12, 0x55, 0x19,
+	0x74, 0x36, 0x14, 0x22, 0x1c, 0x30, 0x42, 0x13, 0x4e, 0x68, 0x1c, 0x0b, 0x09, 0xaa, 0xe6, 0x8e,
+	0x3b, 0x83, 0xf0, 0x53, 0x65, 0xfc, 0x04, 0x84, 0xba, 0x6c, 0x33, 0x67, 0x99, 0x74, 0x5f, 0xa0,
+	0x2b, 0x47, 0xd0, 0x2c, 0x11, 0x71, 0xc6, 0xf0, 0x7d, 0x54, 0xd3, 0x86, 0x8e, 0xd5, 0xb2, 0xbc,
+	0xa9, 0x95, 0xd9, 0xf6, 0x49, 0x93, 0xb6, 0xf5, 0xad, 0x55, 0x7b, 0xfb, 0xf7, 0x8d, 0xd2, 0xb7,
+	0xfd, 0xef, 0x4b, 0x56, 0xd7, 0x5c, 0x73, 0x5d, 0x74, 0x19, 0x74, 0x9f, 0x33, 0x1a, 0x19, 0x2f,
+	0x7c, 0x09, 0x95, 0x79, 0x00, 0x82, 0x95, 0x6e, 0x99, 0x07, 0xee, 0x3d, 0x34, 0x3d, 0xc6, 0x31,
+	0xce, 0xff, 0x91, 0x30, 0x46, 0xd5, 0x98, 0x46, 0xcc, 0x29, 0xb7, 0x2c, 0xcf, 0xee, 0x42, 0xed,
+	0xde, 0x32, 0xa3, 0x3c, 0x64, 0x34, 0xcc, 0xd9, 0x69, 0xf2, 0x2f, 0xcd, 0x68, 0x07, 0xac, 0xf3,
+	0x1b, 0xe0, 0xeb, 0x08, 0x85, 0xa9, 0xc8, 0x93, 0x75, 0xe8, 0x54, 0xa0, 0x63, 0x03, 0xf2, 0x58,
+	0xf9, 0xcf, 0x99, 0xe0, 0x8f, 0xa8, 0xf4, 0xfb, 0xa7, 0xd9, 0xef, 0x97, 0x4d, 0x4a, 0xc3, 0x3a,
+	0xc5, 0xfe, 0x1a, 0xb2, 0x07, 0x10, 0x70, 0x9d, 0x07, 0x90, 0xa1, 0xd2, 0xad, 0x6b, 0x60, 0xed,
+	0x30, 0x5b, 0x65, 0x2c, 0x1b, 0x46, 0x55, 0xc9, 0x23, 0xe6, 0x54, 0x35, 0xa6, 0x6a, 0x7c, 0x15,
+	0x4d, 0xf6, 0x45, 0x04, 0x12, 0x13, 0x20, 0x51, 0x53, 0xc7, 0xb5, 0x40, 0x0d, 0x02, 0x8d, 0xcc,
+	0x17, 0x29, 0x73, 0x6a, 0xd0, 0xb3, 0x15, 0xf2, 0x4c, 0x01, 0xca, 0x1c, 0xda, 0x60, 0x32, 0x09,
+	0x82, 0x75, 0x05, 0xa8, 0x29, 0x95, 0x28, 0x7d, 0x4d, 0x87, 0x4a, 0xb4, 0xae, 0x45, 0xd5, 0x51,
+	0x8b, 0x42, 0x43, 0x8b, 0xda, 0x5a, 0x54, 0x21, 0x23, 0x51, 0x68, 0x83, 0x28, 0xd2, 0xa2, 0x0a,
+	0x00, 0x51, 0x07, 0x4d, 0x66, 0x92, 0xa6, 0x92, 0x05, 0xce, 0x54, 0xcb, 0xf2, 0xea, 0xdd, 0x83,
+	0x23, 0x9e, 0x45, 0xb6, 0x4f, 0x63, 0x9f, 0x0d, 0x06, 0x2c, 0x70, 0x2e, 0x40, 0xef, 0x10, 0xc0,
+	0x0d, 0x54, 0xdf, 0xe0, 0x31, 0xcf, 0xfa, 0x2c, 0x70, 0x2e, 0x42, 0x73, 0x74, 0x5e, 0xf9, 0x51,
+	0x45, 0x13, 0xf0, 0xa5, 0xf1, 0x47, 0x0b, 0xd5, 0xf4, 0x9b, 0xc4, 0xde, 0xc9, 0x2f, 0xf6, 0xf8,
+	0x0a, 0x34, 0x16, 0xcf, 0xc1, 0xd4, 0xff, 0x3c, 0x77, 0xf9, 0xfd, 0xcf, 0xbf, 0x5f, 0xcb, 0xb7,
+	0xf1, 0x1c, 0x49, 0x29, 0xdf, 0x48, 0x86, 0xa4, 0x60, 0x55, 0xf1, 0x07, 0x0b, 0x55, 0xd5, 0xd3,
+	0xc6, 0xf3, 0x05, 0x06, 0x63, 0xfb, 0xd1, 0x58, 0x38, 0x93, 0x67, 0x62, 0xb4, 0x21, 0x86, 0x87,
+	0xe7, 0x0b, 0x63, 0x48, 0x46, 0x23, 0xf2, 0x96, 0x07, 0xef, 0xf0, 0x67, 0x0b, 0xd5, 0xf4, 0x16,
+	0x14, 0x7e, 0x96, 0x23, 0xeb, 0x54, 0xf8, 0x59, 0x8e, 0xae, 0x94, 0x7b, 0x07, 0xf2, 0x2c, 0x61,
+	0xaf, 0x30, 0x8f, 0x7e, 0xd5, 0x3a, 0xd1, 0x27, 0x0b, 0x4d, 0xc0, 0x5e, 0xe0, 0xa2, 0xa1, 0xc7,
+	0xf7, 0xab, 0xe1, 0x9d, 0x4d, 0x34, 0x71, 0x08, 0xc4, 0x59, 0xc4, 0x0b, 0x85, 0x71, 0x22, 0x75,
+	0x07, 0xd2, 0xac, 0x3e, 0xd8, 0xde, 0x6d, 0x5a, 0x3b, 0xbb, 0x4d, 0xeb, 0xcf, 0x6e, 0xd3, 0xfa,
+	0xb2, 0xd7, 0x2c, 0xed, 0xec, 0x35, 0x4b, 0xbf, 0xf6, 0x9a, 0xa5, 0x57, 0xcb, 0x21, 0x97, 0xfd,
+	0xbc, 0xd7, 0xf6, 0x45, 0x74, 0x4c, 0xec, 0xcd, 0x61, 0x29, 0x87, 0x09, 0xcb, 0x7a, 0x35, 0xf8,
+	0xa1, 0xbd, 0xfb, 0x2f, 0x00, 0x00, 0xff, 0xff, 0x7c, 0x9c, 0xe6, 0x09, 0x38, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -159,6 +577,12 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Team Queries a list of Team items.
+	Team(ctx context.Context, in *QueryTeamRequest, opts ...grpc.CallOption) (*QueryTeamResponse, error)
+	// League Queries a list of League items.
+	League(ctx context.Context, in *QueryLeagueRequest, opts ...grpc.CallOption) (*QueryLeagueResponse, error)
+	// Match Queries a list of Match items.
+	Match(ctx context.Context, in *QueryMatchRequest, opts ...grpc.CallOption) (*QueryMatchResponse, error)
 }
 
 type queryClient struct {
@@ -178,10 +602,43 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Team(ctx context.Context, in *QueryTeamRequest, opts ...grpc.CallOption) (*QueryTeamResponse, error) {
+	out := new(QueryTeamResponse)
+	err := c.cc.Invoke(ctx, "/futchain.futchain.v1.Query/Team", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) League(ctx context.Context, in *QueryLeagueRequest, opts ...grpc.CallOption) (*QueryLeagueResponse, error) {
+	out := new(QueryLeagueResponse)
+	err := c.cc.Invoke(ctx, "/futchain.futchain.v1.Query/League", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Match(ctx context.Context, in *QueryMatchRequest, opts ...grpc.CallOption) (*QueryMatchResponse, error) {
+	out := new(QueryMatchResponse)
+	err := c.cc.Invoke(ctx, "/futchain.futchain.v1.Query/Match", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Team Queries a list of Team items.
+	Team(context.Context, *QueryTeamRequest) (*QueryTeamResponse, error)
+	// League Queries a list of League items.
+	League(context.Context, *QueryLeagueRequest) (*QueryLeagueResponse, error)
+	// Match Queries a list of Match items.
+	Match(context.Context, *QueryMatchRequest) (*QueryMatchResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -190,6 +647,15 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) Team(ctx context.Context, req *QueryTeamRequest) (*QueryTeamResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Team not implemented")
+}
+func (*UnimplementedQueryServer) League(ctx context.Context, req *QueryLeagueRequest) (*QueryLeagueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method League not implemented")
+}
+func (*UnimplementedQueryServer) Match(ctx context.Context, req *QueryMatchRequest) (*QueryMatchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Match not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -214,6 +680,60 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Team_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTeamRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Team(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/futchain.futchain.v1.Query/Team",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Team(ctx, req.(*QueryTeamRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_League_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLeagueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).League(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/futchain.futchain.v1.Query/League",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).League(ctx, req.(*QueryLeagueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Match_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryMatchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Match(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/futchain.futchain.v1.Query/Match",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Match(ctx, req.(*QueryMatchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "futchain.futchain.v1.Query",
@@ -222,6 +742,18 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "Team",
+			Handler:    _Query_Team_Handler,
+		},
+		{
+			MethodName: "League",
+			Handler:    _Query_League_Handler,
+		},
+		{
+			MethodName: "Match",
+			Handler:    _Query_Match_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -284,6 +816,278 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryTeamRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryTeamRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryTeamRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryTeamResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryTeamResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryTeamResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Id != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryLeagueRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryLeagueRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryLeagueRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryLeagueResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryLeagueResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryLeagueResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.GroupName) > 0 {
+		i -= len(m.GroupName)
+		copy(dAtA[i:], m.GroupName)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.GroupName)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Id != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryMatchRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryMatchRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryMatchRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryMatchResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryMatchResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryMatchResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Finished {
+		i--
+		if m.Finished {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x68
+	}
+	if m.Cancelled {
+		i--
+		if m.Cancelled {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.Started {
+		i--
+		if m.Started {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x58
+	}
+	if len(m.AwayName) > 0 {
+		i -= len(m.AwayName)
+		copy(dAtA[i:], m.AwayName)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.AwayName)))
+		i--
+		dAtA[i] = 0x52
+	}
+	if m.AwayScore != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.AwayScore))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.AwayId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.AwayId))
+		i--
+		dAtA[i] = 0x40
+	}
+	if len(m.HomeName) > 0 {
+		i -= len(m.HomeName)
+		copy(dAtA[i:], m.HomeName)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.HomeName)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if m.HomeScore != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.HomeScore))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.HomeId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.HomeId))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.Time) > 0 {
+		i -= len(m.Time)
+		copy(dAtA[i:], m.Time)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Time)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.LeagueId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.LeagueId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -312,6 +1116,130 @@ func (m *QueryParamsResponse) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryTeamRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovQuery(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *QueryTeamResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovQuery(uint64(m.Id))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryLeagueRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovQuery(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *QueryLeagueResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovQuery(uint64(m.Id))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.GroupName)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryMatchRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovQuery(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *QueryMatchResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovQuery(uint64(m.Id))
+	}
+	if m.LeagueId != 0 {
+		n += 1 + sovQuery(uint64(m.LeagueId))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Time)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.HomeId != 0 {
+		n += 1 + sovQuery(uint64(m.HomeId))
+	}
+	if m.HomeScore != 0 {
+		n += 1 + sovQuery(uint64(m.HomeScore))
+	}
+	l = len(m.HomeName)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.AwayId != 0 {
+		n += 1 + sovQuery(uint64(m.AwayId))
+	}
+	if m.AwayScore != 0 {
+		n += 1 + sovQuery(uint64(m.AwayScore))
+	}
+	l = len(m.AwayName)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Started {
+		n += 2
+	}
+	if m.Cancelled {
+		n += 2
+	}
+	if m.Finished {
+		n += 2
+	}
 	return n
 }
 
@@ -433,6 +1361,799 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryTeamRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryTeamRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryTeamRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryTeamResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryTeamResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryTeamResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryLeagueRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryLeagueRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryLeagueRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryLeagueResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryLeagueResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryLeagueResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryMatchRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryMatchRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryMatchRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryMatchResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryMatchResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryMatchResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LeagueId", wireType)
+			}
+			m.LeagueId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LeagueId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Time", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Time = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field HomeId", wireType)
+			}
+			m.HomeId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.HomeId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field HomeScore", wireType)
+			}
+			m.HomeScore = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.HomeScore |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field HomeName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.HomeName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AwayId", wireType)
+			}
+			m.AwayId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AwayId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AwayScore", wireType)
+			}
+			m.AwayScore = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AwayScore |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AwayName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AwayName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Started", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Started = bool(v != 0)
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cancelled", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Cancelled = bool(v != 0)
+		case 13:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Finished", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Finished = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
