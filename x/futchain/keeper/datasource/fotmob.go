@@ -152,11 +152,59 @@ type LiveTime struct {
 
 type ComparePriority int
 
+func (c ComparePriority) EventName() string {
+	return priorityNamer[c]
+}
+
 const (
-	None ComparePriority = iota
-	
+	PriorityNoChanges ComparePriority = iota
+	PriorityLiveTime
+	PriorityPeriodLength
+	PriorityStatus
+	PriorityOngoing
+	PriorityFinished
+	PriorityStarted
+	PriorityCancelled
+	PriorityScore
 )
 
-func (m *Match) Compare(other Match) bool {
-	return m.ID == other.ID && m.LeagueID == other.LeagueID && m.Time == other.Time && m.Home == other.Home && m.Away == other.Away && m.Status == other.Status
+var priorityNamer = []string{
+	"match_no_changes",
+	"match_live_time",
+	"match_period_length",
+	"match_status",
+	"match_ongoing",
+	"match_finished",
+	"match_started",
+	"match_cancelled",
+	"match_score",
+}
+
+const MinimumEventPriority ComparePriority = PriorityPeriodLength
+
+func (new *Match) Compare(old *Match) ComparePriority {
+	// check changes in reverse priority order: the higher the priority, the more important the change is
+	switch {
+	case new.Home.Score != old.Home.Score:
+		return PriorityScore
+	case new.Away.Score != old.Away.Score:
+		return PriorityScore
+	case new.Status.Cancelled != old.Status.Cancelled:
+		return PriorityCancelled
+	case new.Status.Finished != old.Status.Finished:
+		return PriorityFinished
+	case new.Status.Started != old.Status.Started:
+		return PriorityStarted
+	case new.Status.Ongoing != old.Status.Ongoing:
+		return PriorityOngoing
+	case new.Status.PeriodLength != old.Status.PeriodLength:
+		return PriorityPeriodLength
+	case new.Status.LiveTime.Long != old.Status.LiveTime.Long:
+		return PriorityLiveTime
+	case new.Status.LiveTime.MaxTime != old.Status.LiveTime.MaxTime:
+		return PriorityLiveTime
+	case new.Status.LiveTime.AddedTime != old.Status.LiveTime.AddedTime:
+		return PriorityLiveTime
+	}
+	return PriorityNoChanges
 }

@@ -33,7 +33,9 @@ table Match {
     league_id: int32;
     time: string;
     home: int32;  // Team ID
+    home_score: int32;
     away: int32;  // Team ID
+    away_score: int32;
     eliminated_team_id: int32;  // -1 if null
     status_id: int32;
     tournament_stage: string;

@@ -85,7 +85,7 @@ func (rcv *Match) MutateHome(n int32) bool {
 	return rcv._tab.MutateInt32Slot(10, n)
 }
 
-func (rcv *Match) Away() int32 {
+func (rcv *Match) HomeScore() int32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(12))
 	if o != 0 {
 		return rcv._tab.GetInt32(o + rcv._tab.Pos)
@@ -93,11 +93,11 @@ func (rcv *Match) Away() int32 {
 	return 0
 }
 
-func (rcv *Match) MutateAway(n int32) bool {
+func (rcv *Match) MutateHomeScore(n int32) bool {
 	return rcv._tab.MutateInt32Slot(12, n)
 }
 
-func (rcv *Match) EliminatedTeamId() int32 {
+func (rcv *Match) Away() int32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(14))
 	if o != 0 {
 		return rcv._tab.GetInt32(o + rcv._tab.Pos)
@@ -105,11 +105,11 @@ func (rcv *Match) EliminatedTeamId() int32 {
 	return 0
 }
 
-func (rcv *Match) MutateEliminatedTeamId(n int32) bool {
+func (rcv *Match) MutateAway(n int32) bool {
 	return rcv._tab.MutateInt32Slot(14, n)
 }
 
-func (rcv *Match) StatusId() int32 {
+func (rcv *Match) AwayScore() int32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(16))
 	if o != 0 {
 		return rcv._tab.GetInt32(o + rcv._tab.Pos)
@@ -117,12 +117,36 @@ func (rcv *Match) StatusId() int32 {
 	return 0
 }
 
-func (rcv *Match) MutateStatusId(n int32) bool {
+func (rcv *Match) MutateAwayScore(n int32) bool {
 	return rcv._tab.MutateInt32Slot(16, n)
 }
 
-func (rcv *Match) TournamentStage() []byte {
+func (rcv *Match) EliminatedTeamId() int32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(18))
+	if o != 0 {
+		return rcv._tab.GetInt32(o + rcv._tab.Pos)
+	}
+	return 0
+}
+
+func (rcv *Match) MutateEliminatedTeamId(n int32) bool {
+	return rcv._tab.MutateInt32Slot(18, n)
+}
+
+func (rcv *Match) StatusId() int32 {
+	o := flatbuffers.UOffsetT(rcv._tab.Offset(20))
+	if o != 0 {
+		return rcv._tab.GetInt32(o + rcv._tab.Pos)
+	}
+	return 0
+}
+
+func (rcv *Match) MutateStatusId(n int32) bool {
+	return rcv._tab.MutateInt32Slot(20, n)
+}
+
+func (rcv *Match) TournamentStage() []byte {
+	o := flatbuffers.UOffsetT(rcv._tab.Offset(22))
 	if o != 0 {
 		return rcv._tab.ByteVector(o + rcv._tab.Pos)
 	}
@@ -130,7 +154,7 @@ func (rcv *Match) TournamentStage() []byte {
 }
 
 func (rcv *Match) Status(obj *Status) *Status {
-	o := flatbuffers.UOffsetT(rcv._tab.Offset(20))
+	o := flatbuffers.UOffsetT(rcv._tab.Offset(24))
 	if o != 0 {
 		x := rcv._tab.Indirect(o + rcv._tab.Pos)
 		if obj == nil {
@@ -143,7 +167,7 @@ func (rcv *Match) Status(obj *Status) *Status {
 }
 
 func (rcv *Match) TimeTs() int64 {
-	o := flatbuffers.UOffsetT(rcv._tab.Offset(22))
+	o := flatbuffers.UOffsetT(rcv._tab.Offset(26))
 	if o != 0 {
 		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
@@ -151,11 +175,11 @@ func (rcv *Match) TimeTs() int64 {
 }
 
 func (rcv *Match) MutateTimeTs(n int64) bool {
-	return rcv._tab.MutateInt64Slot(22, n)
+	return rcv._tab.MutateInt64Slot(26, n)
 }
 
 func MatchStart(builder *flatbuffers.Builder) {
-	builder.StartObject(10)
+	builder.StartObject(12)
 }
 func MatchAddId(builder *flatbuffers.Builder, id int32) {
 	builder.PrependInt32Slot(0, id, 0)
@@ -169,23 +193,29 @@ func MatchAddTime(builder *flatbuffers.Builder, time flatbuffers.UOffsetT) {
 func MatchAddHome(builder *flatbuffers.Builder, home int32) {
 	builder.PrependInt32Slot(3, home, 0)
 }
+func MatchAddHomeScore(builder *flatbuffers.Builder, homeScore int32) {
+	builder.PrependInt32Slot(4, homeScore, 0)
+}
 func MatchAddAway(builder *flatbuffers.Builder, away int32) {
-	builder.PrependInt32Slot(4, away, 0)
+	builder.PrependInt32Slot(5, away, 0)
+}
+func MatchAddAwayScore(builder *flatbuffers.Builder, awayScore int32) {
+	builder.PrependInt32Slot(6, awayScore, 0)
 }
 func MatchAddEliminatedTeamId(builder *flatbuffers.Builder, eliminatedTeamId int32) {
-	builder.PrependInt32Slot(5, eliminatedTeamId, 0)
+	builder.PrependInt32Slot(7, eliminatedTeamId, 0)
 }
 func MatchAddStatusId(builder *flatbuffers.Builder, statusId int32) {
-	builder.PrependInt32Slot(6, statusId, 0)
+	builder.PrependInt32Slot(8, statusId, 0)
 }
 func MatchAddTournamentStage(builder *flatbuffers.Builder, tournamentStage flatbuffers.UOffsetT) {
-	builder.PrependUOffsetTSlot(7, flatbuffers.UOffsetT(tournamentStage), 0)
+	builder.PrependUOffsetTSlot(9, flatbuffers.UOffsetT(tournamentStage), 0)
 }
 func MatchAddStatus(builder *flatbuffers.Builder, status flatbuffers.UOffsetT) {
-	builder.PrependUOffsetTSlot(8, flatbuffers.UOffsetT(status), 0)
+	builder.PrependUOffsetTSlot(10, flatbuffers.UOffsetT(status), 0)
 }
 func MatchAddTimeTs(builder *flatbuffers.Builder, timeTs int64) {
-	builder.PrependInt64Slot(9, timeTs, 0)
+	builder.PrependInt64Slot(11, timeTs, 0)
 }
 func MatchEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()

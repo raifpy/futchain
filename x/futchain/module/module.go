@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"cosmossdk.io/core/appmodule"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -15,6 +16,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/raifpy/futchain/x/futchain/keeper"
+	"github.com/raifpy/futchain/x/futchain/keeper/datasource"
 	"github.com/raifpy/futchain/x/futchain/types"
 )
 
@@ -132,7 +134,94 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
-func (am AppModule) BeginBlock(_ context.Context) error {
+func (am AppModule) BeginBlock(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	params, err := am.keeper.Params.Get(goCtx)
+	if err != nil {
+		ctx.Logger().Error("error getting genesis params", "error", err)
+		return err
+	}
+
+	if ctx.BlockHeight()%params.FetchModulo != 0 {
+		ctx.Logger().Debug("block height is not divisible by the fetch modulo. skipping fetch", "block height", ctx.BlockHeight(), "fetch modulo", params.FetchModulo)
+		return nil // we don't fetch data if the block height is not divisible by the fetch modulo
+	}
+
+	ctx.Logger().Info("fetching data", "block height", ctx.BlockHeight(), "fetch modulo", params.FetchModulo)
+	result, err := am.keeper.Datasource.Fetch(goCtx, datasource.WithLogger(ctx.Logger().With("source", "datasource")), datasource.WithTimezone(params.Timezone))
+	if err != nil {
+		ctx.Logger().Error("failed to fetch data", "error", err)
+		return err
+	}
+
+	for _, l := range result {
+
+		saved, err := am.keeper.SaveLeagueIfNotExists(goCtx, l)
+		if err != nil {
+			ctx.Logger().Error("failed to save league to the store", "error", err)
+			continue
+		}
+
+		if saved {
+			// event that we have detected a new league
+			ctx.Logger().Info("detected a new league", "league", l.Name, "id", l.ID, "group", l.GroupName, "event", "new_league")
+			ctx.EventManager().EmitEvent(sdk.NewEvent("new_league", sdk.NewAttribute("league", l.Name), sdk.NewAttribute("id", strconv.Itoa(l.ID))))
+			//TODO: set TypedEvent
+		}
+		for _, m := range l.Matches {
+			// save teams if not exists
+			_, err := am.keeper.SaveTeamIfNotExists(goCtx, m.Home)
+			if err != nil {
+				ctx.Logger().Error("failed to save home team to the store", "error", err, "team", m.Home.Name, "id", m.Home.ID)
+			}
+			_, err = am.keeper.SaveTeamIfNotExists(goCtx, m.Away)
+			if err != nil {
+				ctx.Logger().Error("failed to save away team to the store", "error", err, "team", m.Away.Name, "id", m.Away.ID)
+			}
+
+			saved, err := am.keeper.SaveMatchIfNotExists(goCtx, m)
+			if err != nil {
+				ctx.Logger().Error("failed to save match to the store", "error", err, "match", m.ID, "league_id", m.LeagueID, "home_id", m.Home.ID, "away_id", m.Away.ID)
+				continue
+			}
+
+			if saved {
+				ctx.Logger().Info("detected a new match", "match", m.ID, "event", "new_match")
+				ctx.EventManager().EmitEvent(sdk.NewEvent("new_match", sdk.NewAttribute("id", strconv.Itoa(m.ID)), sdk.NewAttribute("league_id", strconv.Itoa(m.LeagueID)), sdk.NewAttribute("match", m.Home.Name+"/"+m.Away.Name), sdk.NewAttribute("home_id", strconv.Itoa(m.Home.ID)), sdk.NewAttribute("away_id", strconv.Itoa(m.Away.ID)), sdk.NewAttribute("event", "new_match")))
+			} else {
+				//compare for match updates
+				oldmatch, err := am.keeper.GetMatch(goCtx, m.ID)
+				if err != nil {
+					// unexpected error
+					ctx.Logger().Error("failed to get match from the store", "error", err, "when", "compare_match_updates", "match", m.ID, "league_id", m.LeagueID, "home_id", m.Home.ID, "away_id", m.Away.ID)
+					continue
+				}
+
+				if pri := m.Compare(oldmatch); pri != datasource.PriorityNoChanges {
+
+					err := am.keeper.SetMatch(goCtx, m)
+					if err != nil {
+						ctx.Logger().Error("failed to set match to the store", "error", err, "match", m.ID, "league_id", m.LeagueID, "home_id", m.Home.ID, "away_id", m.Away.ID)
+						continue
+					}
+
+					// match has changed.
+					if pri >= datasource.MinimumEventPriority {
+
+						// we will emit an event pri.EventName()
+						ctx.Logger().Info("match has changed", "match", m.ID, "event", pri.EventName())
+						ctx.EventManager().EmitEvent(sdk.NewEvent(pri.EventName(), sdk.NewAttribute("id", strconv.Itoa(m.ID)), sdk.NewAttribute("league_id", strconv.Itoa(m.LeagueID)), sdk.NewAttribute("match", m.Home.Name+"/"+m.Away.Name), sdk.NewAttribute("home_id", strconv.Itoa(m.Home.ID)), sdk.NewAttribute("away_id", strconv.Itoa(m.Away.ID)), sdk.NewAttribute("event", pri.EventName())))
+					}
+				} else {
+					ctx.Logger().Debug("match has no changes", "match", m.ID, "league_id", m.LeagueID, "home_id", m.Home.ID, "away_id", m.Away.ID)
+				}
+
+			}
+		}
+
+	}
+
 	return nil
 }
 

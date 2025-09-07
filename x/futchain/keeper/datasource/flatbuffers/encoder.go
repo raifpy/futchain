@@ -24,7 +24,6 @@ func EncodeTeam(team *datasource.Team) ([]byte, error) {
 	// Create the Team table
 	futchain.TeamStart(builder)
 	futchain.TeamAddId(builder, int32(team.ID))
-	futchain.TeamAddScore(builder, int32(team.Score))
 	futchain.TeamAddName(builder, nameOffset)
 	futchain.TeamAddLongName(builder, longNameOffset)
 	teamOffset := futchain.TeamEnd(builder)
@@ -43,7 +42,6 @@ func DecodeTeam(data []byte) (*datasource.Team, error) {
 
 	return &datasource.Team{
 		ID:       int(team.Id()),
-		Score:    int(team.Score()),
 		Name:     string(team.Name()),
 		LongName: string(team.LongName()),
 	}, nil
@@ -158,7 +156,9 @@ func EncodeMatch(match *datasource.Match) ([]byte, error) {
 	futchain.MatchAddLeagueId(builder, int32(match.LeagueID))
 	futchain.MatchAddTime(builder, timeOffset)
 	futchain.MatchAddHome(builder, int32(match.Home.ID)) // Store only team ID
+	futchain.MatchAddHomeScore(builder, int32(match.Home.Score))
 	futchain.MatchAddAway(builder, int32(match.Away.ID)) // Store only team ID
+	futchain.MatchAddAwayScore(builder, int32(match.Away.Score))
 	futchain.MatchAddEliminatedTeamId(builder, eliminatedTeamID)
 	futchain.MatchAddStatusId(builder, int32(match.StatusID))
 	futchain.MatchAddTournamentStage(builder, tournamentStageOffset)
@@ -212,10 +212,12 @@ func DecodeMatch(data []byte) (*datasource.Match, error) {
 
 	// Create Team objects with only IDs (other fields will be empty)
 	home := datasource.Team{
-		ID: int(match.Home()), // Only ID is stored
+		ID:    int(match.Home()), // Only ID is stored
+		Score: int(match.HomeScore()),
 	}
 	away := datasource.Team{
-		ID: int(match.Away()), // Only ID is stored
+		ID:    int(match.Away()), // Only ID is stored
+		Score: int(match.AwayScore()),
 	}
 
 	return &datasource.Match{
