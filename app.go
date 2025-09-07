@@ -135,6 +135,10 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	cosmosevmserver "github.com/cosmos/evm/server"
+
+	futchainkeeper "github.com/raifpy/futchain/x/futchain/keeper"
+	futchainmodule "github.com/raifpy/futchain/x/futchain/module"
+	futchaintypes "github.com/raifpy/futchain/x/futchain/types"
 )
 
 func init() {
@@ -144,7 +148,7 @@ func init() {
 	defaultNodeHome = evmdconfig.MustGetDefaultNodeHome()
 }
 
-const appName = "evmd"
+const appName = "futchaind"
 
 // defaultNodeHome default home directories for the application daemon
 var defaultNodeHome string
@@ -191,6 +195,8 @@ type EVMD struct {
 	IBCKeeper      *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	TransferKeeper transferkeeper.Keeper
 	CallbackKeeper ibccallbackskeeper.ContractKeeper
+
+	FutchainKeeper futchainkeeper.Keeper
 
 	// Cosmos EVM keepers
 	FeeMarketKeeper   feemarketkeeper.Keeper
@@ -281,6 +287,8 @@ func NewExampleApp(
 		ibcexported.StoreKey, ibctransfertypes.StoreKey,
 		// Cosmos EVM store keys
 		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey, precisebanktypes.StoreKey,
+
+		futchaintypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -518,6 +526,33 @@ func NewExampleApp(
 		authAddr,
 	)
 
+	app.FutchainKeeper = futchainkeeper.NewKeeper(
+		runtime.NewKVStoreService(keys[futchaintypes.StoreKey]),
+		appCodec,
+		app.AccountKeeper.AddressCodec(),
+		authtypes.NewModuleAddress(futchaintypes.GovModuleName),
+		futchainkeeper.DatasourceConfig{
+			ApiURL: "https://www.fotmob.com", //TODO: implement default values from config
+			Headers: map[string]string{
+				"accept":             "*/*",
+				"accept-language":    "en-US,en;q=0.7",
+				"cache-control":      "no-cache",
+				"dnt":                "1",
+				"pragma":             "no-cache",
+				"priority":           "u=1, i",
+				"referer":            "https://www.fotmob.com/",
+				"sec-ch-ua":          `"Chromium";v="140", "Not=A?Brand";v="24", "Brave";v="140"`,
+				"sec-ch-ua-mobile":   "?0",
+				"sec-ch-ua-platform": `"macOS"`,
+				"sec-fetch-dest":     "empty",
+				"sec-fetch-mode":     "cors",
+				"sec-fetch-site":     "same-origin",
+				"sec-gpc":            "1",
+				"user-agent":         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+			},
+		},
+	)
+
 	/*
 		Create Transfer Stack
 
@@ -580,6 +615,7 @@ func NewExampleApp(
 			app.EVMKeeper,
 			app.GovKeeper,
 			app.SlashingKeeper,
+			app.FutchainKeeper,
 			app.AppCodec(),
 		),
 	)
@@ -615,6 +651,7 @@ func NewExampleApp(
 		feemarket.NewAppModule(app.FeeMarketKeeper),
 		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper),
 		precisebank.NewAppModule(app.PreciseBankKeeper, app.BankKeeper, app.AccountKeeper),
+		futchainmodule.NewAppModule(appCodec, app.FutchainKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager which is in charge of setting up basic,
@@ -658,6 +695,7 @@ func NewExampleApp(
 		// Cosmos EVM BeginBlockers
 		erc20types.ModuleName, feemarkettypes.ModuleName,
 		evmtypes.ModuleName, // NOTE: EVM BeginBlocker must come after FeeMarket BeginBlocker
+		futchaintypes.ModuleName,
 
 		// TODO: remove no-ops? check if all are no-ops before removing
 		distrtypes.ModuleName, slashingtypes.ModuleName,
@@ -686,6 +724,7 @@ func NewExampleApp(
 		feegrant.ModuleName, paramstypes.ModuleName, upgradetypes.ModuleName, consensusparamtypes.ModuleName,
 		precisebanktypes.ModuleName,
 		vestingtypes.ModuleName,
+		futchaintypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -707,6 +746,9 @@ func NewExampleApp(
 		precisebanktypes.ModuleName,
 
 		ibctransfertypes.ModuleName,
+
+		futchaintypes.ModuleName,
+
 		genutiltypes.ModuleName, evidencetypes.ModuleName, authz.ModuleName,
 		feegrant.ModuleName, upgradetypes.ModuleName, vestingtypes.ModuleName,
 	}

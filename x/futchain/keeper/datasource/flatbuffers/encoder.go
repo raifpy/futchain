@@ -1,0 +1,286 @@
+package flatbuffers
+
+import (
+	"errors"
+	"time"
+
+	flatbuffers "github.com/google/flatbuffers/go"
+	"github.com/raifpy/futchain/x/futchain/keeper/datasource"
+	"github.com/raifpy/futchain/x/futchain/keeper/datasource/flatbuffers/futchain"
+)
+
+// EncodeTeam encodes a Team struct to FlatBuffers binary format
+func EncodeTeam(team *datasource.Team) ([]byte, error) {
+	if team == nil {
+		return nil, errors.New("team cannot be nil")
+	}
+
+	builder := flatbuffers.NewBuilder(1024)
+
+	// Create string offsets
+	nameOffset := builder.CreateString(team.Name)
+	longNameOffset := builder.CreateString(team.LongName)
+
+	// Create the Team table
+	futchain.TeamStart(builder)
+	futchain.TeamAddId(builder, int32(team.ID))
+	futchain.TeamAddName(builder, nameOffset)
+	futchain.TeamAddLongName(builder, longNameOffset)
+	teamOffset := futchain.TeamEnd(builder)
+
+	builder.Finish(teamOffset)
+	return builder.FinishedBytes(), nil
+}
+
+// DecodeTeam decodes FlatBuffers binary data to a Team struct
+func DecodeTeam(data []byte) (*datasource.Team, error) {
+	if len(data) == 0 {
+		return nil, errors.New("data cannot be empty")
+	}
+
+	team := futchain.GetRootAsTeam(data, 0)
+
+	return &datasource.Team{
+		ID:       int(team.Id()),
+		Name:     string(team.Name()),
+		LongName: string(team.LongName()),
+	}, nil
+}
+
+// EncodeStatus encodes a Status struct to FlatBuffers binary format
+func EncodeStatus(status *datasource.Status) ([]byte, error) {
+	if status == nil {
+		return nil, errors.New("status cannot be nil")
+	}
+
+	builder := flatbuffers.NewBuilder(1024)
+
+	// Create LiveTime table
+	liveTimeLongOffset := builder.CreateString(status.LiveTime.Long)
+	futchain.LiveTimeStart(builder)
+	futchain.LiveTimeAddLong(builder, liveTimeLongOffset)
+	futchain.LiveTimeAddMaxTime(builder, int32(status.LiveTime.MaxTime))
+	futchain.LiveTimeAddAddedTime(builder, int32(status.LiveTime.AddedTime))
+	liveTimeOffset := futchain.LiveTimeEnd(builder)
+
+	// Create the Status table
+	futchain.StatusStart(builder)
+	futchain.StatusAddUtcTime(builder, status.UtcTime.Unix())
+	futchain.StatusAddPeriodLength(builder, int32(status.PeriodLength))
+	futchain.StatusAddStarted(builder, status.Started)
+	futchain.StatusAddCancelled(builder, status.Cancelled)
+	futchain.StatusAddFinished(builder, status.Finished)
+	futchain.StatusAddOngoing(builder, status.Ongoing)
+	futchain.StatusAddLiveTime(builder, liveTimeOffset)
+	statusOffset := futchain.StatusEnd(builder)
+
+	builder.Finish(statusOffset)
+	return builder.FinishedBytes(), nil
+}
+
+// DecodeStatus decodes FlatBuffers binary data to a Status struct
+func DecodeStatus(data []byte) (*datasource.Status, error) {
+	if len(data) == 0 {
+		return nil, errors.New("data cannot be empty")
+	}
+
+	status := futchain.GetRootAsStatus(data, 0)
+
+	// Decode LiveTime
+	var liveTime datasource.LiveTime
+	liveTimeObj := status.LiveTime(nil)
+	if liveTimeObj != nil {
+		liveTime = datasource.LiveTime{
+			Long:      string(liveTimeObj.Long()),
+			MaxTime:   int(liveTimeObj.MaxTime()),
+			AddedTime: int(liveTimeObj.AddedTime()),
+		}
+	}
+
+	return &datasource.Status{
+		UtcTime:      time.Unix(status.UtcTime(), 0),
+		PeriodLength: int(status.PeriodLength()),
+		Started:      status.Started(),
+		Cancelled:    status.Cancelled(),
+		Finished:     status.Finished(),
+		Ongoing:      status.Ongoing(),
+		LiveTime:     liveTime,
+	}, nil
+}
+
+// EncodeMatch encodes a Match struct to FlatBuffers binary format
+func EncodeMatch(match *datasource.Match) ([]byte, error) {
+	if match == nil {
+		return nil, errors.New("match cannot be nil")
+	}
+
+	builder := flatbuffers.NewBuilder(1024)
+
+	// Create string offsets
+	timeOffset := builder.CreateString(match.Time)
+	tournamentStageOffset := builder.CreateString(match.TournamentStage)
+
+	// Encode Status struct directly with new fields
+	// Create LiveTime table
+	liveTimeLongOffset := builder.CreateString(match.Status.LiveTime.Long)
+	futchain.LiveTimeStart(builder)
+	futchain.LiveTimeAddLong(builder, liveTimeLongOffset)
+	futchain.LiveTimeAddMaxTime(builder, int32(match.Status.LiveTime.MaxTime))
+	futchain.LiveTimeAddAddedTime(builder, int32(match.Status.LiveTime.AddedTime))
+	liveTimeOffset := futchain.LiveTimeEnd(builder)
+
+	// Create the Status table
+	futchain.StatusStart(builder)
+	futchain.StatusAddUtcTime(builder, match.Status.UtcTime.Unix())
+	futchain.StatusAddPeriodLength(builder, int32(match.Status.PeriodLength))
+	futchain.StatusAddStarted(builder, match.Status.Started)
+	futchain.StatusAddCancelled(builder, match.Status.Cancelled)
+	futchain.StatusAddFinished(builder, match.Status.Finished)
+	futchain.StatusAddOngoing(builder, match.Status.Ongoing)
+	futchain.StatusAddLiveTime(builder, liveTimeOffset)
+	statusOffset := futchain.StatusEnd(builder)
+
+	// Handle eliminated team ID (convert any to int32)
+	eliminatedTeamID := int32(-1) // Default to -1 for null
+	if match.EliminatedTeamID != nil {
+		if id, ok := match.EliminatedTeamID.(int); ok {
+			eliminatedTeamID = int32(id)
+		} else if id, ok := match.EliminatedTeamID.(int32); ok {
+			eliminatedTeamID = id
+		}
+	}
+
+	// Create the Match table
+	futchain.MatchStart(builder)
+	futchain.MatchAddId(builder, int32(match.ID))
+	futchain.MatchAddLeagueId(builder, int32(match.LeagueID))
+	futchain.MatchAddTime(builder, timeOffset)
+	futchain.MatchAddHome(builder, int32(match.Home.ID)) // Store only team ID
+	futchain.MatchAddHomeScore(builder, int32(match.Home.Score))
+	futchain.MatchAddAway(builder, int32(match.Away.ID)) // Store only team ID
+	futchain.MatchAddAwayScore(builder, int32(match.Away.Score))
+	futchain.MatchAddEliminatedTeamId(builder, eliminatedTeamID)
+	futchain.MatchAddStatusId(builder, int32(match.StatusID))
+	futchain.MatchAddTournamentStage(builder, tournamentStageOffset)
+	futchain.MatchAddStatus(builder, statusOffset)
+	futchain.MatchAddTimeTs(builder, match.TimeTS)
+	matchOffset := futchain.MatchEnd(builder)
+
+	builder.Finish(matchOffset)
+	return builder.FinishedBytes(), nil
+}
+
+// DecodeMatch decodes FlatBuffers binary data to a Match struct
+func DecodeMatch(data []byte) (*datasource.Match, error) {
+	if len(data) == 0 {
+		return nil, errors.New("data cannot be empty")
+	}
+
+	match := futchain.GetRootAsMatch(data, 0)
+
+	// Decode Status struct with new fields
+	var status datasource.Status
+	statusObj := match.Status(nil)
+	if statusObj != nil {
+		// Decode LiveTime
+		var liveTime datasource.LiveTime
+		liveTimeObj := statusObj.LiveTime(nil)
+		if liveTimeObj != nil {
+			liveTime = datasource.LiveTime{
+				Long:      string(liveTimeObj.Long()),
+				MaxTime:   int(liveTimeObj.MaxTime()),
+				AddedTime: int(liveTimeObj.AddedTime()),
+			}
+		}
+
+		status = datasource.Status{
+			UtcTime:      time.Unix(statusObj.UtcTime(), 0),
+			PeriodLength: int(statusObj.PeriodLength()),
+			Started:      statusObj.Started(),
+			Cancelled:    statusObj.Cancelled(),
+			Finished:     statusObj.Finished(),
+			Ongoing:      statusObj.Ongoing(),
+			LiveTime:     liveTime,
+		}
+	}
+
+	// Handle eliminated team ID
+	var eliminatedTeamID any
+	if match.EliminatedTeamId() != -1 {
+		eliminatedTeamID = int(match.EliminatedTeamId())
+	}
+
+	// Create Team objects with only IDs (other fields will be empty)
+	home := datasource.Team{
+		ID:    int(match.Home()), // Only ID is stored
+		Score: int(match.HomeScore()),
+	}
+	away := datasource.Team{
+		ID:    int(match.Away()), // Only ID is stored
+		Score: int(match.AwayScore()),
+	}
+
+	return &datasource.Match{
+		ID:               int(match.Id()),
+		LeagueID:         int(match.LeagueId()),
+		Time:             string(match.Time()),
+		Home:             home,
+		Away:             away,
+		EliminatedTeamID: eliminatedTeamID,
+		StatusID:         int(match.StatusId()),
+		TournamentStage:  string(match.TournamentStage()),
+		Status:           status,
+		TimeTS:           match.TimeTs(),
+	}, nil
+}
+
+// EncodeLeague encodes a League struct to FlatBuffers binary format
+func EncodeLeague(league *datasource.League) ([]byte, error) {
+	if league == nil {
+		return nil, errors.New("league cannot be nil")
+	}
+
+	builder := flatbuffers.NewBuilder(1024)
+
+	// Create string offsets
+	groupNameOffset := builder.CreateString(league.GroupName)
+	ccodeOffset := builder.CreateString(league.Ccode)
+	nameOffset := builder.CreateString(league.Name)
+
+	// Create the League table
+	futchain.LeagueStart(builder)
+	futchain.LeagueAddIsGroup(builder, league.IsGroup)
+	futchain.LeagueAddGroupName(builder, groupNameOffset)
+	futchain.LeagueAddCcode(builder, ccodeOffset)
+	futchain.LeagueAddId(builder, int32(league.ID))
+	futchain.LeagueAddPrimaryId(builder, int32(league.PrimaryID))
+	futchain.LeagueAddName(builder, nameOffset)
+	leagueOffset := futchain.LeagueEnd(builder)
+
+	builder.Finish(leagueOffset)
+	return builder.FinishedBytes(), nil
+}
+
+// DecodeLeague decodes FlatBuffers binary data to a League struct
+func DecodeLeague(data []byte) (*datasource.League, error) {
+	if len(data) == 0 {
+		return nil, errors.New("data cannot be empty")
+	}
+
+	league := futchain.GetRootAsLeague(data, 0)
+
+	return &datasource.League{
+		IsGroup:   league.IsGroup(),
+		GroupName: string(league.GroupName()),
+		Ccode:     string(league.Ccode()),
+		ID:        int(league.Id()),
+		PrimaryID: int(league.PrimaryId()),
+		Name:      string(league.Name()),
+		Matches:   []datasource.Match{}, // Empty matches slice
+	}, nil
+}
+
+// GetBinarySize returns the size of the binary data
+func GetBinarySize(data []byte) int {
+	return len(data)
+}

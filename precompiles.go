@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
+	futchainkeeper "github.com/raifpy/futchain/x/futchain/keeper"
 
 	bankprecompile "github.com/cosmos/evm/precompiles/bank"
 	"github.com/cosmos/evm/precompiles/bech32"
@@ -83,9 +84,11 @@ func NewAvailableStaticPrecompiles(
 	evmKeeper *evmkeeper.Keeper,
 	govKeeper govkeeper.Keeper,
 	slashingKeeper slashingkeeper.Keeper,
+	futchainKeeper futchainkeeper.Keeper,
 	codec codec.Codec,
 	opts ...Option,
 ) map[common.Address]vm.PrecompiledContract {
+	//TODO: add futchain precompile here.
 	options := defaultOptionals()
 	for _, opt := range opts {
 		opt(&options)
