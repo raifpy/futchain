@@ -31,6 +31,10 @@ service Query {
   rpc Match(QueryMatchRequest) returns (QueryMatchResponse) {
     option (google.api.http).get = "/raifpy/futchain/futchain/v1/match/{id}";
   }
+
+  rpc UnfinishedMatches(QueryUnfinishedMatchesRequest) returns (QueryUnfinishedMatchesResponse){
+    option (google.api.http).get = "/raifpy/futchain/futchain/v1/unfinishedmatches";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -88,4 +92,10 @@ message QueryMatchResponse {
   bool started = 11;
   bool cancelled = 12;
   bool finished = 13;
+}
+
+message QueryUnfinishedMatchesRequest{}
+
+message QueryUnfinishedMatchesResponse {
+    repeated int64 ids = 1;
 }
