@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"encoding/binary"
+	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/raifpy/futchain/x/futchain/keeper/datasource"
 	"github.com/raifpy/futchain/x/futchain/keeper/datasource/flatbuffers"
 )
@@ -11,19 +12,6 @@ import (
 type DatasourceConfig struct {
 	ApiURL  string
 	Headers map[string]string
-}
-
-func (k *Keeper) TeamKey(id int) []byte {
-
-	return append(TeamKey, sdk.Uint64ToBigEndian(uint64(id))...)
-}
-
-func (k *Keeper) MatchKey(id int) []byte {
-	return append(MatchKey, sdk.Uint64ToBigEndian(uint64(id))...)
-}
-
-func (k *Keeper) LeagueKey(id int) []byte {
-	return append(LeagueKey, sdk.Uint64ToBigEndian(uint64(id))...)
 }
 
 func (k *Keeper) SaveTeamIfNotExists(ctx context.Context, team datasource.Team) (bool, error) {
@@ -129,4 +117,39 @@ func (k *Keeper) GetTeam(ctx context.Context, id int) (*datasource.Team, error) 
 		return nil, err
 	}
 	return flatbuffers.NewTeamEncoder().DecodeFromBinary(buf)
+}
+
+func (k *Keeper) SaveUnfinishedMatch(ctx context.Context, match datasource.Match) error {
+	key := k.MatchKeyUnfinished(match.ID)
+
+	var val = make([]byte, 8)
+
+	fmt.Printf("match.ID: %v\n", match.ID)
+	fmt.Printf("val: %v\n", val)
+	binary.BigEndian.PutUint64(val, uint64(match.ID))
+	return k.storeService.OpenKVStore(ctx).Set(key, val)
+}
+
+func (k *Keeper) DeleteUnfinishedMatch(ctx context.Context, matchID int) error {
+	key := k.MatchKeyUnfinished(matchID)
+	return k.storeService.OpenKVStore(ctx).Delete(key)
+}
+
+func (k *Keeper) ListUnfinishedMatches(ctx context.Context) ([]int, error) {
+	iterator, err := k.storeService.OpenKVStore(ctx).Iterator(MatchKeyUnfinishedPrefix, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer iterator.Close()
+
+	var matchIDs []int
+	for ; iterator.Valid(); iterator.Next() {
+		val := iterator.Value()
+		if len(val) != 8 {
+			continue
+		}
+		id := int(binary.BigEndian.Uint64(val))
+		matchIDs = append(matchIDs, id)
+	}
+	return matchIDs, nil
 }

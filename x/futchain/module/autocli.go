@@ -37,6 +37,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Query Match",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
 				},
+				{
+					RpcMethod: "UnfinishedMatches",
+					Use:       "unfinished-matches",
+					Short:     "Query Unfinished Matches",
+				},
 
 				// this line is used by ignite scaffolding # autocli/query
 			},

@@ -192,6 +192,15 @@ func (am AppModule) BeginBlock(goCtx context.Context) error {
 			if saved {
 				ctx.Logger().Info("detected a new match", "match", m.ID, "event", "new_match")
 				ctx.EventManager().EmitEvent(sdk.NewEvent("new_match", sdk.NewAttribute("id", strconv.Itoa(m.ID)), sdk.NewAttribute("league_id", strconv.Itoa(m.LeagueID)), sdk.NewAttribute("match", m.Home.Name+"/"+m.Away.Name), sdk.NewAttribute("home_id", strconv.Itoa(m.Home.ID)), sdk.NewAttribute("away_id", strconv.Itoa(m.Away.ID)), sdk.NewAttribute("event", "new_match")))
+
+				if !m.Status.Finished {
+					// new match, and not finished. let's save it.
+					err := am.keeper.SaveUnfinishedMatch(goCtx, m)
+					if err != nil {
+						ctx.Logger().Error("failed to save unfinished match to the store", "error", err, "match", m.ID, "league_id", m.LeagueID, "home_id", m.Home.ID, "away_id", m.Away.ID)
+					}
+				}
+
 			} else {
 				//compare for match updates
 				oldmatch, err := am.keeper.GetMatch(goCtx, m.ID)
@@ -207,6 +216,17 @@ func (am AppModule) BeginBlock(goCtx context.Context) error {
 					if err != nil {
 						ctx.Logger().Error("failed to set match to the store", "error", err, "match", m.ID, "league_id", m.LeagueID, "home_id", m.Home.ID, "away_id", m.Away.ID)
 						continue
+					}
+
+					if (!oldmatch.Status.Finished && m.Status.Finished) || (!oldmatch.Status.Cancelled && m.Status.Cancelled) {
+						// match has finished now. remove it from unfinished matches
+						err := am.keeper.DeleteUnfinishedMatch(goCtx, m.ID)
+						if err != nil {
+							ctx.Logger().Error("failed to delete unfinished match from the store", "error", err, "match", m.ID, "league_id", m.LeagueID, "home_id", m.Home.ID, "away_id", m.Away.ID)
+						}
+						// event emit that match has finished
+						ctx.Logger().Info("match has finished", "match", m.ID, "event", "match_finished")
+						ctx.EventManager().EmitEvent(sdk.NewEvent("match_finished", sdk.NewAttribute("id", strconv.Itoa(m.ID))))
 					}
 
 					// match has changed.
