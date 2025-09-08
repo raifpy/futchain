@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
 	futchainkeeper "github.com/raifpy/futchain/x/futchain/keeper"
+	futchainmodule "github.com/raifpy/futchain/x/futchain/module"
 
 	bankprecompile "github.com/cosmos/evm/precompiles/bank"
 	"github.com/cosmos/evm/precompiles/bech32"
@@ -84,7 +85,7 @@ func NewAvailableStaticPrecompiles(
 	evmKeeper *evmkeeper.Keeper,
 	govKeeper govkeeper.Keeper,
 	slashingKeeper slashingkeeper.Keeper,
-	futchainKeeper futchainkeeper.Keeper,
+	futchainKeeper *futchainkeeper.Keeper,
 	codec codec.Codec,
 	opts ...Option,
 ) map[common.Address]vm.PrecompiledContract {
@@ -145,9 +146,15 @@ func NewAvailableStaticPrecompiles(
 		panic(fmt.Errorf("failed to instantiate slashing precompile: %w", err))
 	}
 
+	futchainPrecompile, err := futchainmodule.NewFutchainEvmBridge(futchainKeeper)
+	if err != nil {
+		panic(fmt.Errorf("failed to instantiate futchain precompile: %w", err))
+	}
+
 	// Stateless precompiles
 	precompiles[bech32Precompile.Address()] = bech32Precompile
 	precompiles[p256Precompile.Address()] = p256Precompile
+	precompiles[futchainPrecompile.Address()] = futchainPrecompile
 
 	// Stateful precompiles
 	precompiles[stakingPrecompile.Address()] = stakingPrecompile

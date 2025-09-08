@@ -1,0 +1,23 @@
+{
+  "name": "futchain-precompile-test",
+  "version": "1.0.0",
+  "description": "Test suite for Futchain EVM precompile",
+  "main": "test_precompile.js",
+  "scripts": {
+    "test": "node test_futchain_precompile.js",
+    "test-old": "node test_precompile.js",
+    "install-deps": "npm install web3"
+  },
+  "dependencies": {
+    "web3": "^4.16.0"
+  },
+  "keywords": [
+    "blockchain",
+    "evm",
+    "precompile",
+    "cosmos",
+    "test"
+  ],
+  "author": "Futchain",
+  "license": "MIT"
+}

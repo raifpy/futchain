@@ -1,6 +1,7 @@
 package evmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"github.com/spf13/cast"
 
 	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
@@ -139,7 +141,12 @@ import (
 	futchainkeeper "github.com/raifpy/futchain/x/futchain/keeper"
 	futchainmodule "github.com/raifpy/futchain/x/futchain/module"
 	futchaintypes "github.com/raifpy/futchain/x/futchain/types"
+
+	_ "embed"
 )
+
+//go:embed x/futchain/contracts/abi.json
+var f []byte
 
 func init() {
 	// manually update the power reduction by replacing micro (u) -> atto (a) evmos
@@ -526,6 +533,10 @@ func NewExampleApp(
 		authAddr,
 	)
 
+	abi, err := abi.JSON(bytes.NewReader(f))
+	if err != nil {
+		panic("failed to load abi: " + err.Error())
+	}
 	app.FutchainKeeper = futchainkeeper.NewKeeper(
 		runtime.NewKVStoreService(keys[futchaintypes.StoreKey]),
 		appCodec,
@@ -551,6 +562,7 @@ func NewExampleApp(
 				"user-agent":         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
 			},
 		},
+		abi,
 	)
 
 	/*
@@ -615,7 +627,7 @@ func NewExampleApp(
 			app.EVMKeeper,
 			app.GovKeeper,
 			app.SlashingKeeper,
-			app.FutchainKeeper,
+			&app.FutchainKeeper,
 			app.AppCodec(),
 		),
 	)

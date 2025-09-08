@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/core/address"
 	corestore "cosmossdk.io/core/store"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 
 	"github.com/raifpy/futchain/x/futchain/keeper/datasource"
 	"github.com/raifpy/futchain/x/futchain/types"
@@ -25,6 +26,7 @@ type Keeper struct {
 	Params collections.Item[types.Params]
 
 	Datasource *datasource.DatasourceFM
+	ABI        abi.ABI // base contract abi
 }
 
 func NewKeeper(
@@ -33,7 +35,7 @@ func NewKeeper(
 	addressCodec address.Codec,
 	authority []byte,
 	c DatasourceConfig,
-
+	abi abi.ABI,
 ) Keeper {
 	if _, err := addressCodec.BytesToString(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address %s: %s", authority, err))
@@ -60,6 +62,7 @@ func NewKeeper(
 				return headers
 			}(),
 		},
+		ABI: abi,
 	}
 
 	schema, err := sb.Build()

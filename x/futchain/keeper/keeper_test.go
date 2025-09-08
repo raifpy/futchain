@@ -12,6 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 
 	"github.com/raifpy/futchain/x/futchain/keeper"
 	module "github.com/raifpy/futchain/x/futchain/module"
@@ -42,6 +43,7 @@ func initFixture(t *testing.T) *fixture {
 		addressCodec,
 		authority,
 		keeper.DatasourceConfig{},
+		abi.ABI{},
 	)
 
 	// Initialize params

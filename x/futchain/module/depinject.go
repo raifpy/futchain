@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/depinject/appconfig"
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 
 	"github.com/raifpy/futchain/x/futchain/keeper"
 	"github.com/raifpy/futchain/x/futchain/types"
@@ -45,6 +46,7 @@ type ModuleOutputs struct {
 }
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
+	panic("we should never call this function")
 	// default to governance authority if not provided
 	authority := authtypes.NewModuleAddress(types.GovModuleName)
 	if in.Config.Authority != "" {
@@ -59,6 +61,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 			ApiURL:  in.Config.ApiUrl,
 			Headers: in.Config.Headers,
 		},
+		abi.ABI{},
 	)
 	m := NewAppModule(in.Cdc, k, in.AuthKeeper, in.BankKeeper)
 

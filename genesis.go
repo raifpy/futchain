@@ -8,6 +8,7 @@ import (
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
 	"github.com/raifpy/futchain/cmd/evmd/config"
+	futchaintypes "github.com/raifpy/futchain/x/futchain/types"
 
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
@@ -27,7 +28,13 @@ type GenesisState map[string]json.RawMessage
 // enable ALL precompiles, and include default preinstalls.
 func NewEVMGenesisState() *evmtypes.GenesisState {
 	evmGenState := evmtypes.DefaultGenesisState()
-	evmGenState.Params.ActiveStaticPrecompiles = evmtypes.AvailableStaticPrecompiles
+	
+	// Add all available static precompiles plus our custom Futchain precompile
+	activePrecompiles := make([]string, len(evmtypes.AvailableStaticPrecompiles))
+	copy(activePrecompiles, evmtypes.AvailableStaticPrecompiles)
+	activePrecompiles = append(activePrecompiles, futchaintypes.FutchainPrecompileAddress)
+	
+	evmGenState.Params.ActiveStaticPrecompiles = activePrecompiles
 	evmGenState.Preinstalls = evmtypes.DefaultPreinstalls
 
 	return evmGenState
