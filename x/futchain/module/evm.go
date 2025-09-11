@@ -100,7 +100,6 @@ func (f *FutchainEvmBridge) handleGetMatch(ctx sdk.Context, method *abi.Method, 
 	matchData := struct {
 		Id        *big.Int
 		LeagueId  *big.Int
-		Name      string
 		Time      string
 		Minute    string
 		HomeId    *big.Int
@@ -115,7 +114,6 @@ func (f *FutchainEvmBridge) handleGetMatch(ctx sdk.Context, method *abi.Method, 
 	}{
 		Id:        big.NewInt(int64(match.ID)),
 		LeagueId:  big.NewInt(int64(match.LeagueID)),
-		Name:      match.Home.Name + " - " + match.Away.Name,
 		Time:      match.Time,                                        // example time:  "09.09.2025 20:45"
 		Minute:    strings.Split(match.Status.LiveTime.Long, ":")[0], // 51:25 -> 51
 		HomeId:    big.NewInt(int64(match.Home.ID)),

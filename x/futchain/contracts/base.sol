@@ -6,7 +6,6 @@ address constant FUTAPP_PRECOMPILE_ADDRESS = 0x000000000000000000000000000000000
 struct MatchData {
     uint256 id;
     uint256 leagueId;
-    string name;
     string time;
     string minute;
     uint256 homeId;
