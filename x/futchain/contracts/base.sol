@@ -8,6 +8,7 @@ struct MatchData {
     uint256 leagueId;
     string name;
     string time;
+    string minute;
     uint256 homeId;
     uint256 awayId;
     uint256 homeScore;

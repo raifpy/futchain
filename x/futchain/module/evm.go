@@ -3,6 +3,7 @@ package futchain
 import (
 	"fmt"
 	"math/big"
+	"strings"
 
 	_ "embed"
 
@@ -101,6 +102,7 @@ func (f *FutchainEvmBridge) handleGetMatch(ctx sdk.Context, method *abi.Method, 
 		LeagueId  *big.Int
 		Name      string
 		Time      string
+		Minute    string
 		HomeId    *big.Int
 		AwayId    *big.Int
 		HomeScore *big.Int
@@ -114,7 +116,8 @@ func (f *FutchainEvmBridge) handleGetMatch(ctx sdk.Context, method *abi.Method, 
 		Id:        big.NewInt(int64(match.ID)),
 		LeagueId:  big.NewInt(int64(match.LeagueID)),
 		Name:      match.Home.Name + " - " + match.Away.Name,
-		Time:      match.Time, // example time:  "09.09.2025 20:45"
+		Time:      match.Time,                                        // example time:  "09.09.2025 20:45"
+		Minute:    strings.Split(match.Status.LiveTime.Long, ":")[0], // 51:25 -> 51
 		HomeId:    big.NewInt(int64(match.Home.ID)),
 		AwayId:    big.NewInt(int64(match.Away.ID)),
 		HomeScore: big.NewInt(int64(match.Home.Score)),
