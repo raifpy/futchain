@@ -155,7 +155,8 @@ func (am AppModule) BeginBlock(goCtx context.Context) error {
 	result, err := am.keeper.Datasource.Fetch(goCtx, datasource.WithLogger(ctx.Logger().With("source", "datasource")), datasource.WithTimezone(params.Timezone))
 	if err != nil {
 		ctx.Logger().Error("failed to fetch data", "error", err)
-		return err
+		return nil // avoid consensus failure
+
 	}
 
 	for _, l := range result {
